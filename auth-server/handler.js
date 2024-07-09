@@ -80,3 +80,38 @@ module.exports.getAccessToken = async (event) => {
       };
     });
 };
+
+module.exports.getCalendarEvents = async (event) => {
+  // Decode 'events' parameter from URL path
+  const events = decodeURIComponent(`${event.pathParameters.events}`);
+
+  return new Promise((resolve, reject) => {
+    /**
+     * Exchange the 'events' parameter for calendar events with a callback function
+     */
+    oAuth2Client.getCalendarEvents(events, (error, response) => {
+      if (error) {
+        return reject(error);
+      }
+      return resolve(response);
+    });
+  })
+    .then((results) => {
+      // Respond with calendar events data
+      return {
+        statusCode: 200,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Credentials": true,
+        },
+        body: JSON.stringify(results),
+      };
+    })
+    .catch((error) => {
+      // Handle error
+      return {
+        statusCode: 500,
+        body: JSON.stringify(error),
+      };
+    });
+};
