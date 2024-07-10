@@ -82,19 +82,34 @@ module.exports.getAccessToken = async (event) => {
 };
 
 module.exports.getCalendarEvents = async (event) => {
+  const access_token = decodeURIComponent(
+    `${event.pathParameters.access_token}`
+  );
+
+  // Set access token as credentials in oAuth2Client
+  oAuth2Client.setCredentials({ access_token });
+
   // Decode 'events' parameter from URL path
   const events = decodeURIComponent(`${event.pathParameters.events}`);
 
   return new Promise((resolve, reject) => {
-    /**
-     * Exchange the 'events' parameter for calendar events with a callback function
-     */
-    oAuth2Client.getCalendarEvents(events, (error, response) => {
-      if (error) {
-        return reject(error);
+    // Use calendar API to get events
+    calendar.events.list(
+      {
+        calendarId: CALENDAR_ID,
+        auth: oAuth2Client,
+        timeMin: new Date().toISOString(),
+        maxResults: 10,
+        singleEvents: true,
+        orderBy: "startTime",
+      },
+      (error, response) => {
+        if (error) {
+          return reject(error);
+        }
+        return resolve(response);
       }
-      return resolve(response);
-    });
+    );
   })
     .then((results) => {
       // Respond with calendar events data
@@ -104,7 +119,7 @@ module.exports.getCalendarEvents = async (event) => {
           "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Credentials": true,
         },
-        body: JSON.stringify(results),
+        body: JSON.stringify({ events: results.data.items }),
       };
     })
     .catch((error) => {
