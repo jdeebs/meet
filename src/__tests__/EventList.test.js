@@ -1,3 +1,9 @@
+/**
+ * This file contains tests for the EventList component. 
+ * The EventList component is responsible for rendering a list of event items.
+ * These tests check for the presence of key elements and the correct rendering of a given number of events.
+ */
+
 import { render } from "@testing-library/react";
 import EventList from "../components/EventList";
 

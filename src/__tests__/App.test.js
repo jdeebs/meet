@@ -1,3 +1,9 @@
+/**
+ * This file contains tests for the App component. 
+ * The App component is the main component that renders other sub-components like EventList and CitySearch.
+ * These tests check for the presence of key elements to ensure that the App component renders correctly.
+ */
+
 import { render } from "@testing-library/react";
 import App from "../App";
 

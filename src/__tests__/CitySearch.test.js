@@ -1,3 +1,9 @@
+/**
+ * This file contains tests for the CitySearch component. 
+ * The CitySearch component is responsible for rendering a text input for users to search for a city.
+ * These tests check for the presence of the text input and ensure it has the correct class name for styling.
+ */
+
 import { render } from "@testing-library/react";
 import CitySearch from "../components/CitySearch";
 
