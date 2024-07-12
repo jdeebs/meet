@@ -20,6 +20,13 @@ const CitySearch = ({ allLocations }) => {
     setSuggestions(filteredLocations);
   };
 
+  const handleItemClicked = (event) => {
+    const value = event.target.textContent;
+    // Update query state with the clicked suggestions value
+    setQuery(value);
+    setShowSuggestions(false); // Hide the suggestions list
+  };
+
   return (
     // Main container for the City Search component
     <div id="city-search">
@@ -38,10 +45,14 @@ const CitySearch = ({ allLocations }) => {
         <ul className="suggestions">
           {/* Map through suggestions and render each as a list item */}
           {suggestions.map((suggestion) => {
-            return <li key={suggestion}>{suggestion}</li>;
+            return (
+              <li onClick={handleItemClicked} key={suggestion}>
+                {suggestion}
+              </li>
+            );
           })}
           {/* Add a special list item to see all cities */}
-          <li key="See all cities">
+          <li onClick={handleItemClicked} key="See all cities">
             <b>See all cities</b>
           </li>
         </ul>
