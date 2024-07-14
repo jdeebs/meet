@@ -4,6 +4,7 @@
  * These tests check for the presence of key elements to ensure that the App component renders correctly.
  */
 
+import React from "react";
 import { render } from "@testing-library/react";
 import App from "../App";
 
@@ -23,4 +24,9 @@ describe("<App /> component", () => {
     // Expect the AppDOM to contain an element with id "city-search"
     expect(AppDOM.querySelector("#city-search")).toBeInTheDocument();
   });
+
+  test("render NumberOfEvents", () => {
+    // Expect the AppDOM to contain an element with id "number-of-events"
+    expect(AppDOM.querySelector("#number-of-events")).toBeInTheDocument();
+  })
 });

@@ -5,8 +5,11 @@ const NumberOfEvents = ({ setNumberOfEvents }) => {
   const [number, setNumber] = useState(32);
 
   const handleInputChange = (event) => {
+    // Extract current value of the input field
     const value = event.target.value;
+    // Update local state number with new value and re-render component
     setNumber(value);
+    // Pass new value as a prop to parent component
     setNumberOfEvents(value);
   };
 
@@ -18,6 +21,7 @@ const NumberOfEvents = ({ setNumberOfEvents }) => {
         id="number-of-events"
         value={number}
         onChange={handleInputChange}
+        data-testid="number-input" // Add data-testid for testing
       />
     </div>
   );

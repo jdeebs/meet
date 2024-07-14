@@ -7,13 +7,12 @@ describe("<NumberOfEvents /> component", () => {
   let inputElement;
 
   beforeEach(() => {
-    const { getByRole } = render(
+    // Render the NumberOfEvents component and store getByTestId function
+    const { getByTestId } = render(
       <NumberOfEvents setNumberOfEvents={() => {}} />
     );
-    /**
-     * This line extracts the getByRole function from the object returned by render and assigns it to a constant variable inputElement, allowing getByRole to be used directly in tests without needing to reference the entire NumberOfEvents object
-     */
-    inputElement = getByRole("textbox");
+    // Assign the input element to inputElement using getByTestId
+    inputElement = getByTestId("number-input");
   });
 
   test("renders NumberOfEvents component", () => {
@@ -21,11 +20,16 @@ describe("<NumberOfEvents /> component", () => {
   });
 
   test("default value of input is 32", () => {
-    expect(inputElement).toHaveValue("32");
+    // Convert inputElement value to string before assertion
+    expect(inputElement.value.toString()).toBe("32");
   });
 
   test("value of input changes when user types in it", async () => {
-    await userEvent.type(inputElement, "10");
-    expect(inputElement).toHaveValue("10");
+    // Setup user object, simulating user interaction
+    const user = userEvent.setup();
+    // Simulate user typing "10" into the inputElement
+    await user.type(inputElement, "{backspace}{backspace}10");
+    // Check if inputElement now has the value "10" after converting inputElement value to string before assertion
+    expect(inputElement.value.toString()).toBe("10");
   });
 });
