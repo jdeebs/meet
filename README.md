@@ -28,6 +28,8 @@ The **Meet App** project is a serverless, progressive web application (PWA) buil
 
 ## User Stories
 
+   - **As a user**, I should be able to filter events by city, so that I can see a list of events taking place in that city.
+
    - **As a user**, I should be able to show or hide event details, so that I can quickly view or conceal information based on my needs.
 
    - **As a user**, I should be able to specify the number of events to display, so that I can manage the amount of information I see at once.
@@ -40,6 +42,14 @@ The **Meet App** project is a serverless, progressive web application (PWA) buil
 
 ## Scenarios In Gherkin Syntax
 
+```
+Feature: Filter Events by City
+
+  Scenario: User filters events by selecting a city
+    Given I am on the event list page
+    When I select a city from the city filter dropdown
+    Then I should see a list of events taking place in that city
+```
 ```
 Feature: Show/Hide Event Details
 
