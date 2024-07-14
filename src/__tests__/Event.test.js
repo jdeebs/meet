@@ -39,16 +39,16 @@ describe("<Event /> component", () => {
     expect(queryByText("Show Details")).toBeInTheDocument();
   });
 
-  test("initially hides event details and shows 'Show Details' button", () => {
+  test("initially hides event details and renders 'Show Details' button", () => {
     expect(queryByText("Event Details")).not.toBeInTheDocument();
     expect(queryByText("Show Details")).toBeInTheDocument();
   });
 
-  test("shows event details and 'Hide Details' button when 'Show Details' is clicked", async () => {
+  test("renders event details and 'Hide Details' button when 'Show Details' is clicked", async () => {
     // Setup user object, simulating user interaction
     const user = userEvent.setup();
 
-    // Store element containing the "Show Details" text
+    // Store button element containing the "Show Details" text
     const showDetailsButton = EventComponent.queryByText("Show Details");
 
     // Simulate user click on button asynchronously
@@ -57,5 +57,22 @@ describe("<Event /> component", () => {
     // Check for presence of event details and the 'Hide Details' button
     expect(queryByText("Event Details")).toBeInTheDocument();
     expect(queryByText("Hide Details")).toBeInTheDocument();
+  });
+
+  test("hides event details and renders 'Show Details' button when 'Hide Details' button is clicked", async () => {
+    // Setup user object, simulating user interaction
+    const user = userEvent.setup();
+
+    // Store button elements containing the "Show Details" and "Hide Details" text
+    const showDetailsButton = EventComponent.queryByText("Show Details");
+    const hideDetailsButton = EventComponent.queryByText("Hide Details");
+
+    // Simulate user click on buttons asynchronously
+    await user.click(showDetailsButton);
+    await user.click(hideDetailsButton);
+
+    // Check for presence of 'Show Details' button
+    expect(queryByText("Event Details")).not.toBeInTheDocument();
+    expect(queryByText("Show Details")).toBeInTheDocument();
   });
 });
