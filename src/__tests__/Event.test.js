@@ -13,11 +13,31 @@ describe("<Event /> component", () => {
     event = allEvents[0];
     // Render Event component with the first mock event
     EventComponent = render(<Event event={event} />);
-    
   });
+
   test("renders event title correctly", () => {
     const { queryByText } = EventComponent;
     // Check if the summary(title) is rendered
     expect(queryByText(event.summary)).toBeInTheDocument();
+  });
+
+  test("renders event start time correctly", () => {
+    const { queryByText } = EventComponent;
+    // Check if start time is rendered
+    expect(queryByText(event.created)).toBeInTheDocument();
+  });
+
+  test("renders event location correctly", () => {
+    const { queryByText } = EventComponent;
+
+    // Check if location is rendered
+    expect(queryByText(event.location)).toBeInTheDocument();
+  });
+
+  test("renders show details button", () => {
+    const { queryByText } = EventComponent;
+
+    // Check if Show Details button is rendered
+    expect(queryByText("Show Details")).toBeInTheDocument();
   });
 });
