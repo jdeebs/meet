@@ -23,7 +23,6 @@ describe("<EventList /> component", () => {
   test("renders correct number of events", async () => {
     // Fetch all events using the getEvents function
     const allEvents = await getEvents();
-    // Rerender EventList component with fetched events as a prop
     EventListComponent.rerender(<EventList events={allEvents} />);
     // Expect number of list items in component to match the length of the fetched events
     expect(EventListComponent.getAllByRole("listitem")).toHaveLength(
