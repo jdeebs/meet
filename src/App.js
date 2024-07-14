@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import CitySearch from "./components/CitySearch";
 import EventList from "./components/EventList";
 import NumberOfEvents from "./components/NumberOfEvents";
