@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const CitySearch = ({ allLocations }) => {
+const CitySearch = ({ allLocations, updateEvents }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -9,11 +9,10 @@ const CitySearch = ({ allLocations }) => {
     const value = event.target.value;
     // Filter locations based on the input value
     const filteredLocations = allLocations
-      ? allLocations.filter((location) => {
-          return location.toUpperCase().indexOf(value.toUpperCase()) > -1;
-        })
+      ? allLocations.filter((location) =>
+          location.toUpperCase().includes(value.toUpperCase())
+        )
       : [];
-
     // Update query state with the input value
     setQuery(value);
     // Update suggestions state with the filtered locations
@@ -24,11 +23,13 @@ const CitySearch = ({ allLocations }) => {
     const value = event.target.textContent;
     // Update query state with the clicked suggestions value
     setQuery(value);
-    setShowSuggestions(false); // Hide the suggestions list
+    // Hide the suggestions list
+    setShowSuggestions(false);
+    // Update events based on selected city
+    updateEvents(value);
   };
 
   return (
-    // Main container for the City Search component
     <div id="city-search">
       <input
         type="text"
@@ -41,22 +42,20 @@ const CitySearch = ({ allLocations }) => {
         onChange={handleInputChanged}
       />
       {/* Conditionally render suggestions list if showSuggestions is true */}
-      {showSuggestions ? (
+      {showSuggestions && (
         <ul className="suggestions">
           {/* Map through suggestions and render each as a list item */}
-          {suggestions.map((suggestion) => {
-            return (
-              <li onClick={handleItemClicked} key={suggestion}>
-                {suggestion}
-              </li>
-            );
-          })}
+          {suggestions.map((suggestion) => (
+            <li onClick={handleItemClicked} key={suggestion}>
+              {suggestion}
+            </li>
+          ))}
           {/* Add a special list item to see all cities */}
           <li onClick={handleItemClicked} key="See all cities">
             <b>See all cities</b>
           </li>
         </ul>
-      ) : null}
+      )}
     </div>
   );
 };

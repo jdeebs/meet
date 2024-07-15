@@ -17,6 +17,10 @@ export const extractLocations = (events) => {
 };
 
 // Fetch the list of all events
-export const getEvents = async () => {
-  return mockData;
+export const getEvents = async (city) => {
+  const events = mockData;
+  if (!city || city === "See all cities") {
+    return events;
+  }
+  return events.filter((event) => event.location === city);
 };
