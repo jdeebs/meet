@@ -19,11 +19,16 @@ function App() {
     fetchData();
   }, [numberOfEvents]);
 
+  const updateEvents = async (city) => {
+    const events = await getEvents(city);
+    setEvents(events.slice(0, numberOfEvents));
+  };
+
   return (
     <div className="App">
       <h1 id="title">Meet App</h1>
       <p id="subheading">Choose your nearest city</p>
-      <CitySearch allLocations={locations} />
+      <CitySearch allLocations={locations} updateEvents={updateEvents} />
       <NumberOfEvents setNumberOfEvents={setNumberOfEvents} />
       <EventList events={events} />
     </div>
