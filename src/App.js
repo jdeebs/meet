@@ -2,33 +2,33 @@ import React, { useState, useEffect } from "react";
 import CitySearch from "./components/CitySearch";
 import EventList from "./components/EventList";
 import NumberOfEvents from "./components/NumberOfEvents";
-import { getEvents, extractLocations } from "./api";
+import { getEvents } from "./api";
 import "./App.css";
 
-function App() {
+const App = () => {
   const [events, setEvents] = useState([]);
   const [numberOfEvents, setNumberOfEvents] = useState(32);
-  const [locations, setLocations] = useState([]);
+  const [selectedCity, setSelectedCity] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       const events = await getEvents();
       setEvents(events.slice(0, numberOfEvents));
-      setLocations(extractLocations(events));
     };
     fetchData();
   }, [numberOfEvents]);
 
-  const updateEvents = async (city) => {
-    const events = await getEvents(city);
-    setEvents(events.slice(0, numberOfEvents));
+  const handleCitySelection = async (city) => {
+    setSelectedCity(city);
+    const filteredEvents = await getEvents(city);
+    setEvents(filteredEvents);
   };
 
   return (
     <div className="App">
       <h1 id="title">Meet App</h1>
       <p id="subheading">Choose your nearest city</p>
-      <CitySearch allLocations={locations} updateEvents={updateEvents} />
+      <CitySearch onCitySelect={handleCitySelection} />
       <NumberOfEvents setNumberOfEvents={setNumberOfEvents} />
       <EventList events={events} />
     </div>

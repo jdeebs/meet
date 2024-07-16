@@ -16,7 +16,7 @@ export const extractLocations = (events) => {
   return locations;
 };
 
-// Fetch the list of all events
+// Fetch the list of all events and filter by suggestion
 export const getEvents = async (city) => {
   const events = mockData;
   if (!city || city === "See all cities") {

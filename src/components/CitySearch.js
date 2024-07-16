@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const CitySearch = ({ allLocations, updateEvents }) => {
+const CitySearch = ({ allLocations }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -17,6 +17,8 @@ const CitySearch = ({ allLocations, updateEvents }) => {
     setQuery(value);
     // Update suggestions state with the filtered locations
     setSuggestions(filteredLocations);
+    // Show suggestions when input changes
+    setShowSuggestions(true);
   };
 
   const handleItemClicked = (event) => {
@@ -25,8 +27,6 @@ const CitySearch = ({ allLocations, updateEvents }) => {
     setQuery(value);
     // Hide the suggestions list
     setShowSuggestions(false);
-    // Update events based on selected city
-    updateEvents(value);
   };
 
   return (
