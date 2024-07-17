@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { extractLocations, getEvents } from "../../api";
 import "./CitySearch.css";
 
@@ -7,6 +7,8 @@ const CitySearch = ({ onCitySelect }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [allLocations, setAllLocations] = useState([]);
   const [query, setQuery] = useState("");
+  // Create a reference for the city search input and suggestions container
+  const inputRef = useRef(null);
 
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -16,6 +18,30 @@ const CitySearch = ({ onCitySelect }) => {
       setSuggestions(locations);
     };
     fetchSuggestions();
+  }, []);
+
+  useEffect(() => {
+    // Handle clicks outside the input/suggestions container
+    const handleClickOutside = (event) => {
+      if (inputRef.current && !inputRef.current.contains(event.target)) {
+        setShowSuggestions(false);
+      }
+    };
+    // Handle the escape key press
+    const handleEscapePress = (event) => {
+      if (event.key === "Escape") {
+        setShowSuggestions(false);
+      }
+    };
+    // Add event listeners for mouse clicks and key presses
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscapePress);
+
+    // Clean up event listeners when the component unmounts
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscapePress);
+    };
   }, []);
 
   const handleInputChange = (event) => {
@@ -50,7 +76,7 @@ const CitySearch = ({ onCitySelect }) => {
   };
 
   return (
-    <div id="city-search">
+    <div id="city-search" ref={inputRef}>
       <h2 id="subheader">Choose your nearest city</h2>
       <input
         type="text"
