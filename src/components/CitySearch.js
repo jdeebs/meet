@@ -2,14 +2,16 @@ import { useState, useEffect } from "react";
 import { extractLocations, getEvents } from "../api";
 
 const CitySearch = ({ onCitySelect }) => {
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [allLocations, setAllLocations] = useState([]);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     const fetchSuggestions = async () => {
       const events = await getEvents();
       const locations = extractLocations(events);
+      setAllLocations(locations);
       setSuggestions(locations);
     };
     fetchSuggestions();
@@ -20,20 +22,22 @@ const CitySearch = ({ onCitySelect }) => {
 
     // Update query state with the input value
     setQuery(value);
-    // Show suggestions when input changes
-    setShowSuggestions(true);
     // Update suggestions state with the filtered locations
     setSuggestions(
-      suggestions.filter((city) =>
+      allLocations.filter((city) =>
         city.toLowerCase().includes(value.toLowerCase())
       )
     );
+    // Show suggestions when user types
+    setShowSuggestions(true);
   };
 
   const handleSuggestionClick = (city) => {
     // Update query state with the clicked suggestions value
     setQuery(city);
-    // Hide the suggestions list
+    // Set the suggestions to an empty array
+    setSuggestions([]);
+    // Hide suggestions when a city is selected
     setShowSuggestions(false);
     // Update events to those with suggested city
     onCitySelect(city);
