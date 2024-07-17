@@ -1,32 +1,42 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { extractLocations, getEvents } from "../api";
 
-const CitySearch = ({ allLocations }) => {
+const CitySearch = ({ onCitySelect }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
-  const handleInputChanged = (event) => {
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      const events = await getEvents();
+      const locations = extractLocations(events);
+      setSuggestions(locations);
+    };
+    fetchSuggestions();
+  }, []);
+
+  const handleInputChange = (event) => {
     const value = event.target.value;
-    // Filter locations based on the input value
-    const filteredLocations = allLocations
-      ? allLocations.filter((location) =>
-          location.toUpperCase().includes(value.toUpperCase())
-        )
-      : [];
+
     // Update query state with the input value
     setQuery(value);
-    // Update suggestions state with the filtered locations
-    setSuggestions(filteredLocations);
     // Show suggestions when input changes
     setShowSuggestions(true);
+    // Update suggestions state with the filtered locations
+    setSuggestions(
+      suggestions.filter((city) =>
+        city.toLowerCase().includes(value.toLowerCase())
+      )
+    );
   };
 
-  const handleItemClicked = (event) => {
-    const value = event.target.textContent;
+  const handleSuggestionClick = (city) => {
     // Update query state with the clicked suggestions value
-    setQuery(value);
+    setQuery(city);
     // Hide the suggestions list
     setShowSuggestions(false);
+    // Update events to those with suggested city
+    onCitySelect(city);
   };
 
   return (
@@ -39,20 +49,20 @@ const CitySearch = ({ allLocations }) => {
         // Show suggestions when input field is focused
         onFocus={() => setShowSuggestions(true)}
         // Update the input value and suggestions on change
-        onChange={handleInputChanged}
+        onChange={handleInputChange}
       />
       {/* Conditionally render suggestions list if showSuggestions is true */}
       {showSuggestions && (
         <ul className="suggestions">
           {/* Map through suggestions and render each as a list item */}
-          {suggestions.map((suggestion) => (
-            <li onClick={handleItemClicked} key={suggestion}>
-              {suggestion}
+          {suggestions.map((city) => (
+            <li key={city} onClick={() => handleSuggestionClick(city)}>
+              {city}
             </li>
           ))}
           {/* Add a special list item to see all cities */}
-          <li onClick={handleItemClicked} key="See all cities">
-            <b>See all cities</b>
+          <li onClick={() => handleSuggestionClick("See all cities")}>
+            See all cities
           </li>
         </ul>
       )}
