@@ -33,8 +33,13 @@ const CitySearch = ({ onCitySelect }) => {
   };
 
   const handleSuggestionClick = (city) => {
-    // Update query state with the clicked suggestions value
-    setQuery(city);
+    // Clear input field when "See all cities" is selected
+    if (city === "See all cities") {
+      setQuery("");
+    } else {
+      // Set input field to the selected city
+      setQuery(city);
+    }
     // Set the suggestions to an empty array
     setSuggestions([]);
     // Hide suggestions when a city is selected

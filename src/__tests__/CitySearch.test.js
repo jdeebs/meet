@@ -79,15 +79,16 @@ describe("<CitySearch /> component", () => {
 
   test("renders the suggestion text in the textbox upon clicking on the suggestion", async () => {
     const user = userEvent.setup();
-    const allEvents = await getEvents();
-    const allLocations = extractLocations(allEvents);
+    // Mock onCitySelect function
+    const onCitySelect = jest.fn();
 
-    CitySearchComponent.rerender(<CitySearch allLocations={allLocations} />);
+    // Render the CitySearch component with the mocked onCitySelect prop
+    CitySearchComponent.rerender(<CitySearch onCitySelect={onCitySelect} />);
 
     const cityTextBox = CitySearchComponent.queryByRole("textbox");
     await user.type(cityTextBox, "Berlin");
 
-    // Suggestion textContent should look like this: "Berlin, Germany"
+    // Suggestions textContent look like this: "Berlin, Germany"
     const BerlinGermanySuggestion =
       CitySearchComponent.queryAllByRole("listitem")[0];
 
