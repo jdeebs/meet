@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./NumberOfEvents.css";
 
 const NumberOfEvents = ({ setNumberOfEvents }) => {
   const [number, setNumber] = useState(32);
@@ -20,11 +21,12 @@ const NumberOfEvents = ({ setNumberOfEvents }) => {
   };
 
   return (
-    <div>
-      <label htmlFor="number-of-events">Number of Events:</label>
+    <div id="number-of-events-container">
+      <label htmlFor="number-of-events">Number of Events: </label>
       <input
         type="number"
         id="number-of-events"
+        className="number-input"
         value={number}
         onChange={handleInputChange}
         placeholder="32"

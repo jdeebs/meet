@@ -1,4 +1,5 @@
-import Event from "./Event";
+import Event from "../Event/Event";
+import "./EventList.css";
 
 const EventList = ({ events }) => {
   return (

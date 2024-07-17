@@ -1,0 +1,32 @@
+/* Event Component */
+#event {
+  background-color: #444;
+  border: 1px solid #666;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+#event h2 {
+  font-size: 1.5rem;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+#event p {
+  margin-bottom: 0.5rem;
+}
+
+#show-details {
+  background-color: #77c;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+#show-details:hover {
+  background-color: #5588cc;
+}

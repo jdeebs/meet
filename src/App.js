@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import CitySearch from "./components/CitySearch";
-import EventList from "./components/EventList";
-import NumberOfEvents from "./components/NumberOfEvents";
+import CitySearch from "./components/CitySearch/CitySearch";
+import EventList from "./components/EventList/EventList";
+import NumberOfEvents from "./components/NumberOfEvents/NumberOfEvents";
 import { getEvents } from "./api";
 import "./App.css";
 
@@ -27,7 +27,6 @@ const App = () => {
   return (
     <div className="App">
       <h1 id="title">Meet App</h1>
-      <p id="subheading">Choose your nearest city</p>
       <CitySearch onCitySelect={handleCitySelection} />
       <NumberOfEvents setNumberOfEvents={setNumberOfEvents} />
       <EventList events={events} />

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./Event.css";
 
 const Event = ({ event }) => {
   // State to track if the event details are shown

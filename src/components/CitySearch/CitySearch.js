@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { extractLocations, getEvents } from "../api";
+import { extractLocations, getEvents } from "../../api";
+import "./CitySearch.css";
 
 const CitySearch = ({ onCitySelect }) => {
   const [suggestions, setSuggestions] = useState([]);
@@ -50,6 +51,7 @@ const CitySearch = ({ onCitySelect }) => {
 
   return (
     <div id="city-search">
+      <h2 id="subheader">Choose your nearest city</h2>
       <input
         type="text"
         className="city"
