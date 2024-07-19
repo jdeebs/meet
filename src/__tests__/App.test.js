@@ -64,5 +64,9 @@ describe("<App /> integration", () => {
 
     // Check that the number of rendered events matches the number of events for Berlin
     expect(allRenderedEventItems.length).toBe(berlinEvents.length);
+    // Check that each rendered event includes "Berlin, Germany"
+    allRenderedEventItems.forEach((event) => {
+      expect(event.textContent).toContain("Berlin, Germany");
+    });
   });
 });
