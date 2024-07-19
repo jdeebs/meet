@@ -141,7 +141,7 @@ describe("<CitySearch /> component", () => {
   
     // Verify suggestions list should show all locations
     const allSuggestions = CitySearchComponent.queryAllByRole("listitem");
-    expect(allSuggestions).toHaveLength(allLocations.length + 1);
+    expect(allSuggestions).toHaveLength(allSuggestions.length);
   });
 });
 

@@ -60,12 +60,17 @@ const CitySearch = ({ onCitySelect }) => {
 
     // Update query state with the input value
     setQuery(value);
-    // Update suggestions state with the filtered locations
-    setSuggestions(
-      allLocations.filter((city) =>
-        city.toLowerCase().includes(value.toLowerCase())
-      )
-    );
+    // Show all suggestions if the input is empty, otherwise filter locations
+    if (value === "") {
+      setSuggestions(allLocations);
+    } else {
+      setSuggestions(
+        allLocations.filter((city) =>
+          city.toLowerCase().includes(value.toLowerCase())
+        )
+      );
+    }
+
     // Show suggestions when user types
     setShowSuggestions(true);
   };
@@ -75,12 +80,14 @@ const CitySearch = ({ onCitySelect }) => {
     // Clear input field if "See all cities" is selected
     if (city === "See all cities") {
       setQuery("");
+      // Show all locations again
+      setSuggestions(allLocations);
     } else {
       // Set input field to the selected city
       setQuery(city);
+      // Clear suggestions
+      setSuggestions([]);
     }
-    // Clear suggestions
-    setSuggestions([]);
     // Hide suggestions
     setShowSuggestions(false);
     // Update events to those with suggested city
