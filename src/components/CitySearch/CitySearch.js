@@ -9,6 +9,7 @@ const CitySearch = ({ onCitySelect }) => {
   const [query, setQuery] = useState("");
   // Create a reference for the city search input and suggestions container
   const inputRef = useRef(null);
+  const suggestionsRef = useRef(null);
 
   // Fetch all events and extract locations when component mounts
   useEffect(() => {
@@ -26,8 +27,13 @@ const CitySearch = ({ onCitySelect }) => {
   // Handle clicks outside the input/suggestions container and escape key press
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (inputRef.current && !inputRef.current.contains(event.target)) {
-        // Hide suggestions if click is outside
+      // Check if the click is outside the textbox and suggestions container
+      if (
+        inputRef.current &&
+        !inputRef.current.contains(event.target) &&
+        suggestionsRef.current &&
+        !suggestionsRef.current.contains(event.target)
+      ) {
         setShowSuggestions(false);
       }
     };
@@ -82,13 +88,14 @@ const CitySearch = ({ onCitySelect }) => {
   };
 
   return (
-    <div id="city-search" ref={inputRef}>
+    <div id="city-search">
       <h2 id="subheader">Choose your nearest city</h2>
       <input
         type="text"
         className="city"
         placeholder="Search for a city"
         value={query}
+        ref={inputRef}
         // Show suggestions when input field is focused
         onFocus={() => setShowSuggestions(true)}
         // Update the input value and suggestions on change
@@ -96,7 +103,7 @@ const CitySearch = ({ onCitySelect }) => {
       />
       {/* Conditionally render suggestions list if showSuggestions is true */}
       {showSuggestions && (
-        <ul className="suggestions">
+        <ul className="suggestions" ref={suggestionsRef}>
           {/* Map through suggestions and render each as a list item */}
           {suggestions.map((city) => (
             <li key={city} onClick={() => handleSuggestionClick(city)}>
