@@ -97,6 +97,52 @@ describe("<CitySearch /> component", () => {
 
     expect(cityTextBox).toHaveValue(BerlinGermanySuggestion.textContent);
   });
+
+  test("does not hide suggestions when clicking inside the component", async () => {
+    const user = userEvent.setup();
+    const cityTextBox = CitySearchComponent.queryByRole("textbox");
+    await user.click(cityTextBox);
+
+    const suggestionsList = CitySearchComponent.queryByRole("list");
+    expect(suggestionsList).toBeInTheDocument();
+
+    // Simulate user click inside the component
+    const suggestionsContainer = CitySearchComponent.queryByRole("list");
+    await user.click(suggestionsContainer);
+
+    // Suggestions should still be visible
+    expect(suggestionsList).toBeInTheDocument();
+  });
+
+  test("hides suggestions when Escape key is pressed", async () => {
+    const user = userEvent.setup();
+    const cityTextBox = CitySearchComponent.queryByRole("textbox");
+    await user.click(cityTextBox);
+
+    // Show suggestions
+    const suggestionsList = CitySearchComponent.queryByRole("list");
+    expect(suggestionsList).toBeInTheDocument();
+
+    // Simulate user pressing escape key
+    await user.keyboard("{Escape}");
+
+    // Suggestions should be hidden
+    const hiddenSuggestionsList = CitySearchComponent.queryByRole("list");
+    expect(hiddenSuggestionsList).not.toBeInTheDocument();
+  });
+
+  test("filters suggestions correctly with empty input", async () => {
+    const user = userEvent.setup();
+    const cityTextBox = CitySearchComponent.queryByRole("textbox");
+    await user.type(cityTextBox, "Berlin");
+  
+    // Clear input field
+    await user.clear(cityTextBox);
+  
+    // Verify suggestions list should show all locations
+    const allSuggestions = CitySearchComponent.queryAllByRole("listitem");
+    expect(allSuggestions).toHaveLength(allLocations.length + 1);
+  });
 });
 
 describe("<CitySearch /> integration", () => {
