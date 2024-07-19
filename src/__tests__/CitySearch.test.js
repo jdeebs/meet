@@ -102,18 +102,27 @@ describe("<CitySearch /> component", () => {
 describe("<CitySearch /> integration", () => {
   test("renders suggestions list when the app is rendered", async () => {
     const user = userEvent.setup();
+    // Render App component and get the root DOM element
     const AppComponent = render(<App />);
     const AppDOM = AppComponent.container.firstChild;
 
+    // Select CitySearch component within the App
     const CitySearchDOM = AppDOM.querySelector("#city-search");
+    // Find input field in CitySearch component
     const cityTextBox = within(CitySearchDOM).queryByRole("textbox");
+    // Simulate user clicking on the textbox to trigger the suggestions list
     await user.click(cityTextBox);
 
+    // Fetch all events
     const allEvents = await getEvents();
+    // Extract all unique locations from the fetched events
     const allLocations = extractLocations(allEvents);
 
+    // Find all items in the suggestions list
     const suggestionListItems =
       within(CitySearchDOM).queryAllByRole("listitem");
+    // Check that the number of suggestion list items matches the number of locations plus one
+    // (one additional item for "See all cities")
     expect(suggestionListItems.length).toBe(allLocations.length + 1);
   });
 });
