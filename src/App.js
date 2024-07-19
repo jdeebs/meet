@@ -7,13 +7,14 @@ import "./App.css";
 
 const App = () => {
   const [events, setEvents] = useState([]);
+  // State for current number of events
   const [numberOfEvents, setNumberOfEvents] = useState(32);
   const [selectedCity, setSelectedCity] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
-      const events = await getEvents();
-      setEvents(events.slice(0, numberOfEvents));
+      const allEvents = await getEvents();
+      setEvents(allEvents.slice(0, numberOfEvents));
     };
     fetchData();
   }, [numberOfEvents]);
