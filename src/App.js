@@ -20,6 +20,7 @@ const App = () => {
       setEvents(allEvents.slice(0, numberOfEvents));
     };
     fetchData();
+    // Dependencies: run the effect when numberOfEvents or selectedCity changes
   }, [numberOfEvents, selectedCity]);
 
   // Handler function to update the selectedCity state
@@ -35,6 +36,6 @@ const App = () => {
       <EventList events={events} />
     </div>
   );
-}
+};
 
 export default App;

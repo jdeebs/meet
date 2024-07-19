@@ -10,26 +10,30 @@ const CitySearch = ({ onCitySelect }) => {
   // Create a reference for the city search input and suggestions container
   const inputRef = useRef(null);
 
+  // Fetch all events and extract locations when component mounts
   useEffect(() => {
     const fetchSuggestions = async () => {
       const events = await getEvents();
       const locations = extractLocations(events);
+      // Set all locations for future filtering
       setAllLocations(locations);
+      // Initially display all locations as suggestions
       setSuggestions(locations);
     };
     fetchSuggestions();
   }, []);
 
+  // Handle clicks outside the input/suggestions container and escape key press
   useEffect(() => {
-    // Handle clicks outside the input/suggestions container
     const handleClickOutside = (event) => {
       if (inputRef.current && !inputRef.current.contains(event.target)) {
+        // Hide suggestions if click is outside
         setShowSuggestions(false);
       }
     };
-    // Handle the escape key press
     const handleEscapePress = (event) => {
       if (event.key === "Escape") {
+        // Hide suggestions on escape key press
         setShowSuggestions(false);
       }
     };
@@ -44,6 +48,7 @@ const CitySearch = ({ onCitySelect }) => {
     };
   }, []);
 
+  // Handle changes in the input field
   const handleInputChange = (event) => {
     const value = event.target.value;
 
@@ -59,17 +64,18 @@ const CitySearch = ({ onCitySelect }) => {
     setShowSuggestions(true);
   };
 
+  // Handle click on a suggestion
   const handleSuggestionClick = (city) => {
-    // Clear input field when "See all cities" is selected
+    // Clear input field if "See all cities" is selected
     if (city === "See all cities") {
       setQuery("");
     } else {
       // Set input field to the selected city
       setQuery(city);
     }
-    // Set the suggestions to an empty array
+    // Clear suggestions
     setSuggestions([]);
-    // Hide suggestions when a city is selected
+    // Hide suggestions
     setShowSuggestions(false);
     // Update events to those with suggested city
     onCitySelect(city);
