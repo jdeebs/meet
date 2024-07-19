@@ -7,22 +7,24 @@ import "./App.css";
 
 const App = () => {
   const [events, setEvents] = useState([]);
-  // State for current number of events
+  // State for current number of events to be displayed
   const [numberOfEvents, setNumberOfEvents] = useState(32);
+  // State for selected city to filter events
   const [selectedCity, setSelectedCity] = useState("");
 
+  // Hook to fetch data whenever numberOfEvents or selectedCity changes
   useEffect(() => {
     const fetchData = async () => {
-      const allEvents = await getEvents();
+      // Fetch events based on the selected city
+      const allEvents = await getEvents(selectedCity);
       setEvents(allEvents.slice(0, numberOfEvents));
     };
     fetchData();
-  }, [numberOfEvents]);
+  }, [numberOfEvents, selectedCity]);
 
+  // Handler function to update the selectedCity state
   const handleCitySelection = async (city) => {
     setSelectedCity(city);
-    const filteredEvents = await getEvents(city);
-    setEvents(filteredEvents);
   };
 
   return (
