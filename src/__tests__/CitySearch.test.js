@@ -4,7 +4,7 @@
  * These tests check for the presence of the text input and ensure it has the correct class name for styling.
  */
 
-import { render, within } from "@testing-library/react";
+import { render, within, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CitySearch from "../components/CitySearch/CitySearch";
 import App from "../App";
@@ -118,11 +118,13 @@ describe("<CitySearch /> integration", () => {
     // Extract all unique locations from the fetched events
     const allLocations = extractLocations(allEvents);
 
-    // Find all items in the suggestions list
-    const suggestionListItems =
-      within(CitySearchDOM).queryAllByRole("listitem");
-    // Check that the number of suggestion list items matches the number of locations plus one
-    // (one additional item for "See all cities")
-    expect(suggestionListItems.length).toBe(allLocations.length + 1);
+    await waitFor(() => {
+      // Find all items in the suggestions list
+      const suggestionListItems =
+        within(CitySearchDOM).queryAllByRole("listitem");
+      // Check that the number of suggestion list items matches the number of locations plus one
+      // (one additional item for "See all cities")
+      expect(suggestionListItems.length).toBe(allLocations.length + 1);
+    });
   });
 });
