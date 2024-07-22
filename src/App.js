@@ -12,16 +12,14 @@ const App = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const events = await getEvents();
+      const events = await getEvents(selectedCity);
       setEvents(events.slice(0, numberOfEvents));
     };
     fetchData();
-  }, [numberOfEvents]);
+  }, [numberOfEvents, selectedCity]);
 
   const handleCitySelection = async (city) => {
     setSelectedCity(city);
-    const filteredEvents = await getEvents(city);
-    setEvents(filteredEvents);
   };
 
   return (
