@@ -30,6 +30,6 @@ const App = () => {
       <EventList events={events} />
     </div>
   );
-}
+};
 
 export default App;

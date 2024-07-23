@@ -1,5 +1,5 @@
 /**
- * This file contains tests for the App component. 
+ * This file contains tests for the App component.
  * The App component is the main component that renders other sub-components like EventList and CitySearch.
  * These tests check for the presence of key elements to ensure that the App component renders correctly.
  */
@@ -28,5 +28,5 @@ describe("<App /> component", () => {
   test("render NumberOfEvents", () => {
     // Expect the AppDOM to contain an element with id "number-of-events"
     expect(AppDOM.querySelector("#number-of-events")).toBeInTheDocument();
-  })
+  });
 });
