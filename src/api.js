@@ -49,6 +49,10 @@ export const getEvents = async (city) => {
       "/" +
       token;
     const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
     const result = await response.json();
 
     if (result) {
