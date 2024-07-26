@@ -78,12 +78,26 @@ export const getAccessToken = async () => {
 };
 
 const getToken = async (code) => {
-  const encodeCode = encodeURIComponent(code);
-  const response = await fetch(
-    "https://tialqn4x0c.execute-api.us-west-1.amazonaws.com/dev/api/token" +
-      "/" +
-      encodeCode
-  );
+  try {
+    const encodeCode = encodeURIComponent(code);
+    const response = await fetch(
+      "https://tialqn4x0c.execute-api.us-west-1.amazonaws.com/dev/api/token" +
+        "/" +
+        encodeCode
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const { access_token } = await response.json();
+    access_token && localStorage.setItem("access_token", access_token);
+
+    return access_token;
+  } catch (error) {
+    error.json();
+  }
+
   const { access_token } = await response.json();
   access_token && localStorage.setItem("access_token", access_token);
 
@@ -92,6 +106,7 @@ const getToken = async (code) => {
 
 const removeQuery = () => {
   let newURL;
+  
   if (window.history.pushState && window.location.pathname) {
     newURL =
       window.location.protocol +
