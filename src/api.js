@@ -38,6 +38,7 @@ export const getEvents = async (city) => {
 
   const token = await getAccessToken();
   if (token) {
+    removeQuery();
     const url =
       "https://tialqn4x0c.execute-api.us-west-1.amazonaws.com/dev/api/get-events" +
       "/" +
@@ -74,4 +75,19 @@ export const getAccessToken = async () => {
     return code && getToken(code);
   }
   return accessToken;
+};
+
+const removeQuery = () => {
+  let newURL;
+  if (window.history.pushState && window.location.pathname) {
+    newURL =
+      window.location.protocol +
+      "//" +
+      window.location.host +
+      window.location.pathname;
+    window.history.pushState("", "", newURL);
+  } else {
+    newURL = window.location.protocol + "//" + window.location.host;
+    window.history.pushState("", "", newURL);
+  }
 };
