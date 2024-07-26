@@ -105,11 +105,14 @@ const getToken = async (code) => {
     }
 
     const { access_token } = await response.json();
-    access_token && localStorage.setItem("access_token", access_token);
+    if (access_token) {
+      localStorage.setItem("access_token", access_token);
+    }
 
     return access_token;
   } catch (error) {
-    error.json();
+    console.error("Failed to get token:", error);
+    return null;
   }
 };
 
