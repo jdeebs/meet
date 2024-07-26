@@ -97,16 +97,11 @@ const getToken = async (code) => {
   } catch (error) {
     error.json();
   }
-
-  const { access_token } = await response.json();
-  access_token && localStorage.setItem("access_token", access_token);
-
-  return access_token;
 };
 
 const removeQuery = () => {
   let newURL;
-  
+
   if (window.history.pushState && window.location.pathname) {
     newURL =
       window.location.protocol +
