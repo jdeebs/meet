@@ -77,6 +77,11 @@ export const getAccessToken = async () => {
       const response = await fetch(
         "https://tialqn4x0c.execute-api.us-west-1.amazonaws.com/dev/api/get-auth-url"
       );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const result = await response.json();
       const { authUrl } = result;
       return (window.location.href = authUrl);
