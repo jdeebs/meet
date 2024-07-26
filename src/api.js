@@ -77,6 +77,19 @@ export const getAccessToken = async () => {
   return accessToken;
 };
 
+const getToken = async (code) => {
+  const encodeCode = encodeURIComponent(code);
+  const response = await fetch(
+    "https://tialqn4x0c.execute-api.us-west-1.amazonaws.com/dev/api/token" +
+      "/" +
+      encodeCode
+  );
+  const { access_token } = await response.json();
+  access_token && localStorage.setItem("access_token", access_token);
+
+  return access_token;
+};
+
 const removeQuery = () => {
   let newURL;
   if (window.history.pushState && window.location.pathname) {
