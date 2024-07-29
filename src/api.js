@@ -18,22 +18,34 @@ export const extractLocations = (events) => {
  *
  * This function will fetch the list of all events
  */
-export const getEvents = async () => {
+export const getEvents = async (selectedCity = "") => {
+  let events;
   if (window.location.href.startsWith("http://localhost")) {
-    return mockData;
+    events = mockData;
+  } else {
+    const token = await getAccessToken();
+    if (token) {
+      removeQuery();
+      const url =
+        "https://tialqn4x0c.execute-api.us-west-1.amazonaws.com/dev/api/get-events" +
+        "/" +
+        token;
+      const response = await fetch(url);
+      const result = await response.json();
+      events = result.events;
+    }
   }
 
-  const token = await getAccessToken();
+  if (!events) return [];
 
-  if (token) {
-    removeQuery();
-    const url = "https://tialqn4x0c.execute-api.us-west-1.amazonaws.com/dev/api/get-events" + "/" + token;
-    const response = await fetch(url);
-    const result = await response.json();
-    if (result) {
-      return result.events;
-    } else return null;
+  // If a city is selected, filter events by that city
+  if (selectedCity && selectedCity !== "See all cities") {
+    events = events.filter((event) =>
+      event.location.toLowerCase().includes(selectedCity.toLowerCase())
+    );
   }
+
+  return events;
 };
 
 export const getAccessToken = async () => {
@@ -45,7 +57,9 @@ export const getAccessToken = async () => {
     const searchParams = new URLSearchParams(window.location.search);
     const code = await searchParams.get("code");
     if (!code) {
-      const response = await fetch("https://tialqn4x0c.execute-api.us-west-1.amazonaws.com/dev/api/get-auth-url");
+      const response = await fetch(
+        "https://tialqn4x0c.execute-api.us-west-1.amazonaws.com/dev/api/get-auth-url"
+      );
       const result = await response.json();
       const { authUrl } = result;
       return (window.location.href = authUrl);
@@ -83,7 +97,9 @@ const getToken = async (code) => {
     const encodeCode = encodeURIComponent(code);
 
     const response = await fetch(
-      "https://tialqn4x0c.execute-api.us-west-1.amazonaws.com/dev/api/token" + "/" + encodeCode
+      "https://tialqn4x0c.execute-api.us-west-1.amazonaws.com/dev/api/token" +
+        "/" +
+        encodeCode
     );
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
