@@ -27,7 +27,7 @@ describe("<Event /> component", () => {
   });
 
   test("renders event start time correctly", () => {
-    expect(queryByText(event.created)).toBeInTheDocument();
+    expect(queryByText(new Date(event.created).toUTCString())).toBeInTheDocument();
   });
 
   test("renders event location correctly", () => {
@@ -39,7 +39,7 @@ describe("<Event /> component", () => {
   });
 
   test("initially hides event details and renders 'Show Details' button", () => {
-    expect(queryByText("Event Details")).not.toBeInTheDocument();
+    expect(EventComponent.container.querySelector('.details')).not.toBeInTheDocument();
     expect(queryByText("Show Details")).toBeInTheDocument();
   });
 
@@ -54,7 +54,7 @@ describe("<Event /> component", () => {
     await user.click(showDetailsButton);
 
     // Check for presence of event details and the 'Hide Details' button
-    expect(queryByText("Event Details")).toBeInTheDocument();
+    expect(EventComponent.container.querySelector('.details')).toBeInTheDocument();
     expect(queryByText("Hide Details")).toBeInTheDocument();
   });
 
