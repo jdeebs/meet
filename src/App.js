@@ -15,12 +15,10 @@ const App = () => {
   // Hook to fetch data whenever numberOfEvents or selectedCity changes
   useEffect(() => {
     const fetchData = async () => {
-      // Fetch events based on the selected city
-      const allEvents = await getEvents(selectedCity);
-      setEvents(allEvents.slice(0, numberOfEvents));
+      const events = await getEvents(selectedCity);
+      setEvents(events.slice(0, numberOfEvents));
     };
     fetchData();
-    // Dependencies: run the effect when numberOfEvents or selectedCity changes
   }, [numberOfEvents, selectedCity]);
 
   // Handler function to update the selectedCity state
