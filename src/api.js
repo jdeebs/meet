@@ -27,7 +27,7 @@ export const getEvents = async (selectedCity = "") => {
     if (token) {
       removeQuery();
       const url =
-        "https://tialqn4x0c.execute-api.us-west-1.amazonaws.com/dev/api/get-events" +
+        "https://5qwr4hy2m5.execute-api.us-west-1.amazonaws.com/dev/api/get-events" +
         "/" +
         token;
       const response = await fetch(url);
@@ -58,7 +58,7 @@ export const getAccessToken = async () => {
     const code = await searchParams.get("code");
     if (!code) {
       const response = await fetch(
-        "https://tialqn4x0c.execute-api.us-west-1.amazonaws.com/dev/api/get-auth-url"
+        "https://5qwr4hy2m5.execute-api.us-west-1.amazonaws.com/dev/api/get-auth-url"
       );
       const result = await response.json();
       const { authUrl } = result;
@@ -97,7 +97,7 @@ const getToken = async (code) => {
     const encodeCode = encodeURIComponent(code);
 
     const response = await fetch(
-      "https://tialqn4x0c.execute-api.us-west-1.amazonaws.com/dev/api/token" +
+      "https://5qwr4hy2m5.execute-api.us-west-1.amazonaws.com/dev/api/token" +
         "/" +
         encodeCode
     );
