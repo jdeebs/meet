@@ -11,7 +11,7 @@ provider:
   environment:
     CLIENT_ID: ${file(config.json):web.client_id}
     CLIENT_SECRET: ${file(config.json):web.client_secret}
-    CALENDAR_ID: ${file(config.json):CALENDAR_ID}
+    CALENDAR_ID: ${file(config.json):web.calendar_id}
 
 functions:
   getAuthURL:
