@@ -34,7 +34,7 @@ module.exports.getAuthURL = async () => {
     statusCode: 200,
     headers: {
       // Allow request from specific origin
-      "Access-Control-Allow-Origin": 'https://jdeebs.github.io/meet',
+      "Access-Control-Allow-Origin": "*",
       // Allow credentials in requests
       "Access-Control-Allow-Credentials": true,
     },
@@ -66,7 +66,7 @@ module.exports.getAccessToken = async (event) => {
       return {
         statusCode: 200,
         headers: {
-          "Access-Control-Allow-Origin": 'https://jdeebs.github.io/meet',
+          "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Credentials": true,
         },
         body: JSON.stringify(results),
@@ -89,9 +89,6 @@ module.exports.getCalendarEvents = async (event) => {
   // Set access token as credentials in oAuth2Client
   oAuth2Client.setCredentials({ access_token });
 
-  // Decode 'events' parameter from URL path
-  const events = decodeURIComponent(`${event.pathParameters.events}`);
-
   return new Promise((resolve, reject) => {
     // Use calendar API to get events
     calendar.events.list(
@@ -99,15 +96,15 @@ module.exports.getCalendarEvents = async (event) => {
         calendarId: CALENDAR_ID,
         auth: oAuth2Client,
         timeMin: new Date().toISOString(),
-        maxResults: 10,
         singleEvents: true,
         orderBy: "startTime",
       },
       (error, response) => {
         if (error) {
           return reject(error);
+        } else {
+          return resolve(response);
         }
-        return resolve(response);
       }
     );
   })
@@ -116,7 +113,7 @@ module.exports.getCalendarEvents = async (event) => {
       return {
         statusCode: 200,
         headers: {
-          "Access-Control-Allow-Origin": 'https://jdeebs.github.io/meet',
+          "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Credentials": true,
         },
         body: JSON.stringify({ events: results.data.items }),
@@ -126,6 +123,10 @@ module.exports.getCalendarEvents = async (event) => {
       // Handle error
       return {
         statusCode: 500,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Credentials": true,
+        },
         body: JSON.stringify(error),
       };
     });
