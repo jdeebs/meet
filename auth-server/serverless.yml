@@ -20,15 +20,33 @@ functions:
       - http:
           path: api/get-auth-url
           method: get
+          cors:
+            origin: "https://jdeebs.github.io"
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
   getAccessToken:
     handler: handler.getAccessToken
     events:
       - http:
           path: api/token/{code}
           method: get
+          cors:
+            origin: "https://jdeebs.github.io"
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
   getCalendarEvents:
     handler: handler.getCalendarEvents
     events:
       - http:
           path: api/get-events/{access_token}
           method: get
+          cors:
+            origin: "https://jdeebs.github.io"
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
