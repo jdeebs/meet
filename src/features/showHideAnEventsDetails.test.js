@@ -22,13 +22,6 @@ defineFeature(feature, (test) => {
     when(
       "the user clicks on the show details button for an event",
       async () => {
-        AppComponent = render(<App />);
-        AppDOM = AppComponent.container.firstChild;
-
-        // Select the event list container
-        EventListDOM = AppDOM.querySelector("#event-list");
-        expect(EventListDOM).not.toBeNull();
-
         // Wait for the event list items to be rendered
         await waitFor(() => {
           const EventListItems = within(EventListDOM).getAllByRole("listitem");
@@ -118,8 +111,6 @@ defineFeature(feature, (test) => {
     then(
       "the user should no longer see the details for that event",
       async () => {
-        EventListDOM = AppDOM.querySelector("#event-list");
-
         // Wait for the list items to be rendered
         const EventListItems = await waitFor(() => {
           const items = within(EventListDOM).getAllByRole("listitem");
