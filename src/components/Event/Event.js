@@ -19,7 +19,7 @@ const Event = ({ event }) => {
         {showDetails ? "Hide Details" : "Show Details"}
       </button>
       {showDetails ? (
-        <p className="details">
+        <p className="details" data-testid="details">
           {event && event.description}
         </p>
       ) : null}
