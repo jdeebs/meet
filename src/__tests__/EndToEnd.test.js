@@ -30,7 +30,13 @@ describe("show/hide an event details", () => {
     await page.click("#event #show-details");
 
     // Check if event details is defined (shown to user)
-    const eventDetails = await page.$("#event #show-details");
+    const eventDetails = await page.$("#event .details");
     expect(eventDetails).toBeDefined();
+  });
+
+  test('User can collapse an event to hide details', async () => {
+    await page.click("#event #show-details");
+    const eventDetails = await page.$("#event .details");
+    expect(eventDetails).toBeNull();
   });
 });
