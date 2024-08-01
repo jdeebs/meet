@@ -5,7 +5,14 @@ describe("show/hide an event details", () => {
   let page;
   beforeAll(async () => {
     // Open Chromium window
-    browser = await puppeteer.launch();
+    browser = await puppeteer
+      .launch
+      // Uncomment to see tests conducted within the browser
+      (/*{
+        headless: false,
+        slowMo: 250, // Slow down by 250ms per action
+        timeout: 0, // Removes any puppeteer/browser timeout limitations
+        }*/);
     // Open new tab
     page = await browser.newPage();
     // Navigate to local app deployment
@@ -34,7 +41,7 @@ describe("show/hide an event details", () => {
     expect(eventDetails).toBeDefined();
   });
 
-  test('User can collapse an event to hide details', async () => {
+  test("User can collapse an event to hide details", async () => {
     await page.click("#event #show-details");
     const eventDetails = await page.$("#event .details");
     expect(eventDetails).toBeNull();
