@@ -45,7 +45,8 @@ defineFeature(feature, (test) => {
       async () => {
         // Simulate user typing a number into the input
         const user = userEvent.setup();
-        await user.type(NumberInput, "{backspace}{backspace}10");
+        await user.clear(NumberInput); // Clear existing value
+        await user.type(NumberInput, "10");
 
         // Verify that the input value is as expected
         expect(NumberInput.value.toString()).toBe("10");
@@ -62,8 +63,8 @@ defineFeature(feature, (test) => {
           // Find all list items within the event list parent element
           const EventListItems = within(EventListDOM).getAllByRole("listitem");
 
-          // Check the number of list items matches user input value of 10
-          expect(EventListItems.length).toBe(10);
+          // Check the number of list items matches user input value
+          expect(EventListItems.length).toBe(NumberInput.valueAsNumber);
         });
       }
     );
