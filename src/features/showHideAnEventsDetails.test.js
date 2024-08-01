@@ -70,10 +70,79 @@ defineFeature(feature, (test) => {
   });
 
   test("When user clicks on hide event details", ({ given, when, then }) => {
-    given("the event details are visible", () => {});
+    let AppComponent;
+    let AppDOM;
+    let EventListDOM;
+    let EventDOM;
+    given("the event details are visible", async () => {
+      AppComponent = render(<App />);
+      AppDOM = AppComponent.container.firstChild;
 
-    when("the user clicks on the hide details button for that event", () => {});
+      // Wait for the event list items to be rendered
+      await waitFor(async () => {
+        EventListDOM = AppDOM.querySelector("#event-list");
+        const EventListItems = within(EventListDOM).getAllByRole("listitem");
+        // Select the first list item event
+        const firstEventItem = EventListItems[0];
+        EventDOM = firstEventItem.querySelector("#event");
 
-    then("the user should no longer see the details for that event", () => {});
+        // Find and click on show details button
+        const showDetailsBtn = within(EventDOM).getByRole("button", {
+          name: /Show Details/i,
+        });
+        const user = userEvent.setup();
+        user.click(showDetailsBtn);
+
+        // Wait for the details section to become visible
+        const EventDetails = await waitFor(() =>
+          within(EventDOM).getByTestId("details")
+        );
+        expect(EventDetails).toBeVisible();
+      });
+    });
+
+    when(
+      "the user clicks on the hide details button for that event",
+      async () => {
+        // Find and click the hide details button
+        const hideDetailsBtn = within(EventDOM).getByRole("button", {
+          name: /Hide Details/i,
+        });
+        expect(hideDetailsBtn).toBeInTheDocument();
+
+        const user = userEvent.setup();
+        user.click(hideDetailsBtn);
+      }
+    );
+
+    then(
+      "the user should no longer see the details for that event",
+      async () => {
+        EventListDOM = AppDOM.querySelector("#event-list");
+
+        // Wait for the list items to be rendered
+        const EventListItems = await waitFor(() => {
+          const items = within(EventListDOM).getAllByRole("listitem");
+          expect(items.length).toBeGreaterThan(0);
+          return items;
+        });
+
+        // Select the first list item event
+        const firstEventItem = EventListItems[0];
+        EventDOM = firstEventItem.querySelector("#event");
+
+        // Wait for the show details button to become visible after hiding details
+        await waitFor(() => {
+          const showDetailsBtn = within(EventDOM).queryByRole("button", {
+            name: /Show Details/i,
+          });
+          expect(showDetailsBtn).toBeInTheDocument();
+        });
+
+        // Check that event details are not visible
+        const EventDetails = within(EventDOM).queryByTestId("details");
+        expect(EventDetails).toBeNull();
+      }
+    );
   });
 });
