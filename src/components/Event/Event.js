@@ -8,7 +8,7 @@ const Event = ({ event }) => {
   return (
     <ul id="event">
       <h2>{event && event.summary}</h2>
-      <p>{event && event.location}</p>
+      <p className="event-location">{event && event.location}</p>
       <p>{event && new Date(event.created).toUTCString()}</p>
       <button
         id="show-details"
