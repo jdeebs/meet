@@ -99,6 +99,46 @@ describe("filter events by city", () => {
   });
 
   test("User should see a list of suggestions when they search for a city", async () => {
-    
-  })
+    // Click on the input field to focus it
+    await page.click(".city");
+
+    // Type 'Berlin' into input field
+    await page.type(".city", "Berlin");
+
+    // Get the list items within the suggestions list
+    const suggestionListItems = await page.$$eval(".suggestions li", (items) =>
+      items.map((item) => item.textContent.trim())
+    );
+
+    // Check that the number of suggestions is as expected
+    expect(suggestionListItems.length).toBeGreaterThan(0);
+
+    // Check that at least one suggestion contains 'Berlin'
+    const containsBerlin = suggestionListItems.some((item) =>
+      item.includes("Berlin")
+    );
+    expect(containsBerlin).toBe(true);
+  });
+
+  test("User can select a city from the suggested list", async () => {
+    // Click on the first suggestion item
+    await page.click(".suggestions li");
+
+    // Retrieve the updated value of input field
+    const citySearchInputValue = await page.evaluate(() => {
+      return document.querySelector(".city").value;
+    });
+
+    // Check if the input value is 'Berlin, Germany'
+    expect(citySearchInputValue).toBe("Berlin, Germany");
+
+    // Extract city names from the event-location class in the events
+    const eventListItems = await page.$$eval("#event-list li .event-location", (locations) =>
+      locations.map((location) => location.textContent.trim())
+    );
+
+    // Check if all event locations are "Berlin, Germany"
+    const allLocationsAreBerlin = eventListItems.every(location => location === "Berlin, Germany");
+    expect(allLocationsAreBerlin).toBe(true);
+  });
 });
