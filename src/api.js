@@ -1,5 +1,94 @@
 import mockData from "./mock-data";
 
+const checkToken = async (accessToken) => {
+  const response = await fetch(
+    `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`
+  );
+  const result = await response.json();
+  return result;
+};
+
+export const getAccessToken = async () => {
+  try {
+    const accessToken = localStorage.getItem("access_token");
+    const tokenCheck = accessToken && (await checkToken(accessToken));
+
+    if (!accessToken || tokenCheck.error) {
+      await localStorage.removeItem("access_token");
+      const searchParams = new URLSearchParams(window.location.search);
+      const code = await searchParams.get("code");
+
+      if (!code) {
+        const response = await fetch(
+          "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-auth-url"
+        );
+        if (!response.ok) {
+          console.error(
+            "Failed to fetch auth URL:",
+            response.status,
+            response.statusText
+          );
+          throw new Error("Failed to fetch auth URL");
+        }
+
+        const result = await response.json();
+        const { authUrl } = result;
+
+        window.location.href = authUrl;
+        return;
+      }
+
+      return code && getToken(code);
+    }
+
+    return accessToken;
+  } catch (error) {
+    console.error("Error in getAccessToken:", error);
+    throw error;
+  }
+};
+
+const getToken = async (code) => {
+  try {
+    const encodeCode = encodeURIComponent(code);
+
+    const response = await fetch(
+      "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/token" +
+        "/" +
+        encodeCode
+    );
+    if (!response.ok) {
+      // Parse the response as JSON
+      const errorData = await response.json();
+
+      throw new Error(
+        `HTTP error! status: ${response.status}, ${errorData.message}`
+      );
+    }
+    const { access_token } = await response.json();
+    access_token && localStorage.setItem("access_token", access_token);
+    return access_token;
+  } catch (error) {
+    console.error("Error in getToken:", error.message);
+    throw error;
+  }
+};
+
+const removeQuery = () => {
+  let newurl;
+  if (window.history.pushState && window.location.pathname) {
+    newurl =
+      window.location.protocol +
+      "//" +
+      window.location.host +
+      window.location.pathname;
+    window.history.pushState("", "", newurl);
+  } else {
+    newurl = window.location.protocol + "//" + window.location.host;
+    window.history.pushState("", "", newurl);
+  }
+};
+
 /**
  *
  * @param {*} events:
@@ -46,93 +135,4 @@ export const getEvents = async (selectedCity = "") => {
   }
 
   return events;
-};
-
-export const getAccessToken = async () => {
-  try {
-    const accessToken = localStorage.getItem("access_token");
-    const tokenCheck = accessToken && (await checkToken(accessToken));
-
-    if (!accessToken || tokenCheck.error) {
-      await localStorage.removeItem("access_token");
-      const searchParams = new URLSearchParams(window.location.search);
-      const code = await searchParams.get("code");
-
-      if (!code) {
-        const response = await fetch(
-          "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-auth-url"
-        );
-        if (!response.ok) {
-          console.error(
-            "Failed to fetch auth URL:",
-            response.status,
-            response.statusText
-          );
-          throw new Error("Failed to fetch auth URL");
-        }
-
-        const result = await response.json();
-        const { authUrl } = result;
-
-        window.location.href = authUrl;
-        return;
-      }
-
-      return code && getToken(code);
-    }
-
-    return accessToken;
-  } catch (error) {
-    console.error("Error in getAccessToken:", error);
-    throw error;
-  }
-};
-
-const checkToken = async (accessToken) => {
-  const response = await fetch(
-    `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`
-  );
-  const result = await response.json();
-  return result;
-};
-
-const removeQuery = () => {
-  let newurl;
-  if (window.history.pushState && window.location.pathname) {
-    newurl =
-      window.location.protocol +
-      "//" +
-      window.location.host +
-      window.location.pathname;
-    window.history.pushState("", "", newurl);
-  } else {
-    newurl = window.location.protocol + "//" + window.location.host;
-    window.history.pushState("", "", newurl);
-  }
-};
-
-const getToken = async (code) => {
-  try {
-    const encodeCode = encodeURIComponent(code);
-
-    const response = await fetch(
-      "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/token" +
-        "/" +
-        encodeCode
-    );
-    if (!response.ok) {
-      // Parse the response as JSON
-      const errorData = await response.json();
-
-      throw new Error(
-        `HTTP error! status: ${response.status}, ${errorData.message}`
-      );
-    }
-    const { access_token } = await response.json();
-    access_token && localStorage.setItem("access_token", access_token);
-    return access_token;
-  } catch (error) {
-    console.error("Error in getToken:", error.message);
-    throw error;
-  }
 };
