@@ -50,7 +50,7 @@ export const getEvents = async (selectedCity = "") => {
 
 export const getAccessToken = async () => {
   try {
-    const accessToken = localStorage.getItem('access_token');
+    const accessToken = localStorage.getItem("access_token");
     const tokenCheck = accessToken && (await checkToken(accessToken));
 
     if (!accessToken || tokenCheck.error) {
@@ -59,10 +59,16 @@ export const getAccessToken = async () => {
       const code = await searchParams.get("code");
 
       if (!code) {
-        const response = await fetch("https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-auth-url");
+        const response = await fetch(
+          "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-auth-url"
+        );
         if (!response.ok) {
-          console.error('Failed to fetch auth URL:', response.status, response.statusText);
-          throw new Error('Failed to fetch auth URL');
+          console.error(
+            "Failed to fetch auth URL:",
+            response.status,
+            response.statusText
+          );
+          throw new Error("Failed to fetch auth URL");
         }
 
         const result = await response.json();
@@ -77,7 +83,7 @@ export const getAccessToken = async () => {
 
     return accessToken;
   } catch (error) {
-    console.error('Error in getAccessToken:', error);
+    console.error("Error in getAccessToken:", error);
     throw error;
   }
 };
@@ -115,12 +121,18 @@ const getToken = async (code) => {
         encodeCode
     );
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      // Parse the response as JSON
+      const errorData = await response.json();
+
+      throw new Error(
+        `HTTP error! status: ${response.status}, ${errorData.message}`
+      );
     }
     const { access_token } = await response.json();
     access_token && localStorage.setItem("access_token", access_token);
     return access_token;
   } catch (error) {
-    error.json();
+    console.error("Error in getToken:", error.message);
+    throw error;
   }
 };
