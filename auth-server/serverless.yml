@@ -1,9 +1,10 @@
-# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+# app and org for use with dashboard.serverless.com
+service: auth-server
 org: jdeebs
 app: meet
-# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
 
-service: auth-server
+# You can pin your service to only deploy with a specific Serverless version
+frameworkVersion: "4"
 
 provider:
   name: aws

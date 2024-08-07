@@ -27,7 +27,7 @@ export const getEvents = async (selectedCity = "") => {
     if (token) {
       removeQuery();
       const url =
-        "https://5qwr4hy2m5.execute-api.us-west-1.amazonaws.com/dev/api/get-events" +
+        "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-events" +
         "/" +
         token;
       const response = await fetch(url);
@@ -59,7 +59,7 @@ export const getAccessToken = async () => {
       const code = await searchParams.get("code");
 
       if (!code) {
-        const response = await fetch("https://5qwr4hy2m5.execute-api.us-west-1.amazonaws.com/dev/api/get-auth-url");
+        const response = await fetch("https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-auth-url");
         if (!response.ok) {
           console.error('Failed to fetch auth URL:', response.status, response.statusText);
           throw new Error('Failed to fetch auth URL');
@@ -110,7 +110,7 @@ const getToken = async (code) => {
     const encodeCode = encodeURIComponent(code);
 
     const response = await fetch(
-      "https://5qwr4hy2m5.execute-api.us-west-1.amazonaws.com/dev/api/token" +
+      "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/token" +
         "/" +
         encodeCode
     );

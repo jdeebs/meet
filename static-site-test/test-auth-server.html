@@ -50,7 +50,7 @@
         const getAuthUrlButton = document.getElementById("getAuthUrlButton");
         const resultElement = document.getElementById("result");
         const resultLink = document.getElementById("authURL");
-        const getAuthURL = "https://5qwr4hy2m5.execute-api.us-west-1.amazonaws.com/dev/api/get-auth-url";
+        const getAuthURL = "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-auth-url";
 
         getAuthUrlButton.onclick = function () {
             fetch(getAuthURL)
@@ -72,7 +72,7 @@
         const accessTokenElement = document.getElementById("accessToken");
         // Define base URL for API endpoint to exchange the authorization code for an access token
         const getToken =
-            "https://5qwr4hy2m5.execute-api.us-west-1.amazonaws.com/dev/api/token";
+            "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/token";
 
         getAccessToken.onclick = function () {
             // Get value of the auth code entered by user
@@ -95,7 +95,7 @@
         };
         const getEvents = document.getElementById("getEvents");
         const events = document.getElementById("events");
-        const getCalendarEvents = "https://5qwr4hy2m5.execute-api.us-west-1.amazonaws.com/dev/api/get-events";
+        const getCalendarEvents = "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-events";
 
         getEvents.onclick = function () {
             const { access_token } = JSON.parse(accessTokenElement.innerText);
