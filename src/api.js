@@ -8,55 +8,38 @@ const checkToken = async (accessToken) => {
   return result;
 };
 
-export const getAccessToken = async () => {
-  try {
-    const accessToken = localStorage.getItem("access_token");
-    const tokenCheck = accessToken && (await checkToken(accessToken));
+export const getAccessToken = async () => {             
+  const accessToken = localStorage.getItem("access_token");
+  const tokenCheck = accessToken && (await checkToken(accessToken));
 
-    if (!accessToken || tokenCheck.error) {
-      await localStorage.removeItem("access_token");
-      const searchParams = new URLSearchParams(window.location.search);
-      const code = await searchParams.get("code");
-
-      if (!code) {
-        const response = await fetch(
-          "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-auth-url"
-        );
-        if (!response.ok) {
-          console.error(
-            "Failed to fetch auth URL:",
-            response.status,
-            response.statusText
-          );
-          throw new Error("Failed to fetch auth URL");
-        }
-
-        const result = await response.json();
-        const { authUrl } = result;
-
-        window.location.href = authUrl;
-        return;
-      }
-
-      return code && getToken(code);
+  if (!accessToken || tokenCheck.error) {
+    await localStorage.removeItem("access_token");
+    const searchParams = new URLSearchParams(window.location.search);
+    const code = await searchParams.get("code");
+    if (!code) {
+      const response = await fetch(
+        "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-auth-url"
+      );
+      const result = await response.json();
+      const { authUrl } = result;
+      return (window.location.href = authUrl);
     }
-
-    return accessToken;
-  } catch (error) {
-    console.error("Error in getAccessToken:", error);
-    throw error;
+    return code && getToken(code);
   }
+  return accessToken;
 };
+
+
 
 const getToken = async (code) => {
   try {
     const encodeCode = encodeURIComponent(code);
 
-    const response = await fetch(
-      "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/token" +
-        "/" +
-        encodeCode
-    );
+    const url = "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/token";
+
+    const getUrl = `${url}` + "/" + `${encodeCode}`;
+    const response = await fetch(getUrl);
+    
     if (!response.ok) {
       // Parse the response as JSON
       const errorData = await response.json();
@@ -69,8 +52,7 @@ const getToken = async (code) => {
     access_token && localStorage.setItem("access_token", access_token);
     return access_token;
   } catch (error) {
-    console.error("Error in getToken:", error.message);
-    throw error;
+    return error;
   }
 };
 
