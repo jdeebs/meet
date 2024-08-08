@@ -14,7 +14,9 @@ describe("<CitySearch /> component", () => {
   // Before each test, render the CitySearch component and store the result
   let CitySearchComponent;
   beforeEach(() => {
-    CitySearchComponent = render(<CitySearch />);
+    CitySearchComponent = render(
+      <CitySearch onCitySelect={() => {}} setInfoAlert={() => {}} />
+    );
   });
 
   test("renders text input", () => {
@@ -55,7 +57,13 @@ describe("<CitySearch /> component", () => {
     const allEvents = await getEvents();
     // Store all possible locations extracted from allEvents using extractLocations function
     const allLocations = extractLocations(allEvents);
-    CitySearchComponent.rerender(<CitySearch allLocations={allLocations} />);
+    CitySearchComponent.rerender(
+      <CitySearch
+        allLocations={allLocations}
+        onCitySelect={() => {}}
+        setInfoAlert={() => {}}
+      />
+    );
 
     // Simulate user typing "Berlin" in city textbox asynchronously
     const cityTextBox = CitySearchComponent.queryByRole("textbox");
@@ -84,7 +92,9 @@ describe("<CitySearch /> component", () => {
     const onCitySelect = jest.fn();
 
     // Render the CitySearch component with the mocked onCitySelect prop
-    CitySearchComponent.rerender(<CitySearch onCitySelect={onCitySelect} />);
+    CitySearchComponent.rerender(
+      <CitySearch onCitySelect={() => {}} setInfoAlert={() => {}} />
+    );
 
     const cityTextBox = CitySearchComponent.queryByRole("textbox");
     await user.type(cityTextBox, "Berlin");
@@ -135,10 +145,10 @@ describe("<CitySearch /> component", () => {
     const user = userEvent.setup();
     const cityTextBox = CitySearchComponent.queryByRole("textbox");
     await user.type(cityTextBox, "Berlin");
-  
+
     // Clear input field
     await user.clear(cityTextBox);
-  
+
     // Verify suggestions list should show all locations
     const allSuggestions = CitySearchComponent.queryAllByRole("listitem");
     expect(allSuggestions).toHaveLength(allSuggestions.length);
