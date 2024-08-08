@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { extractLocations, getEvents } from "../../api";
 import "./CitySearch.css";
 
-const CitySearch = ({ onCitySelect }) => {
+const CitySearch = ({ onCitySelect, setInfoAlert }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [allLocations, setAllLocations] = useState([]);
@@ -60,19 +60,23 @@ const CitySearch = ({ onCitySelect }) => {
 
     // Update query state with the input value
     setQuery(value);
-    // Show all suggestions if the input is empty, otherwise filter locations
-    if (value === "") {
-      setSuggestions(allLocations);
-    } else {
-      setSuggestions(
-        allLocations.filter((city) =>
+
+    const filteredSuggestions = value
+      ? allLocations.filter((city) =>
           city.toLowerCase().includes(value.toLowerCase())
         )
-      );
-    }
+      : allLocations;
 
-    // Show suggestions when user types
+    setSuggestions(filteredSuggestions);
     setShowSuggestions(true);
+
+    // Set infoAlert message if there are no suggestions and query is not empty
+    if (filteredSuggestions.length === 0 && value !== "") {
+      setInfoAlert("We cannot find the city you're looking for. Please try another city.");
+    } else {
+      // Clear infoAlert if suggestions are available or input is empty
+      setInfoAlert(""); 
+    }
   };
 
   // Handle click on a suggestion
@@ -90,6 +94,8 @@ const CitySearch = ({ onCitySelect }) => {
     }
     // Hide suggestions
     setShowSuggestions(false);
+    // Clear the InfoAlert when a suggestion is clicked
+    setInfoAlert("");
     // Update events to those with suggested city
     onCitySelect(city);
   };
