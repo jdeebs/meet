@@ -1,6 +1,6 @@
 import mockData from "./mock-data";
 
-const checkToken = async (accessToken) => {
+export const checkToken = async (accessToken) => {
   const response = await fetch(
     `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`
   );
@@ -31,7 +31,7 @@ export const getAccessToken = async () => {
 
 
 
-const getToken = async (code) => {
+export const getToken = async (code) => {
   try {
     const encodeCode = encodeURIComponent(code);
 
