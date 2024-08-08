@@ -23,15 +23,24 @@ functions:
       - http:
           path: get-auth-url
           method: get
+          cors:
+            origin: "https://jdeebs.github.io"
+            credentials: true
   getAccessToken:
     handler: handler.getAccessToken
     events:
       - http:
           path: token/{code}
           method: get
+          cors:
+            origin: "https://jdeebs.github.io"
+            credentials: true
   getCalendarEvents:
     handler: handler.getCalendarEvents
     events:
       - http:
           path: get-events/{access_token}
           method: get
+          cors:
+            origin: "https://jdeebs.github.io"
+            credentials: true

@@ -36,7 +36,7 @@ module.exports.getAuthURL = async () => {
       // Allow request from specific origin
       "Access-Control-Allow-Origin": "https://jdeebs.github.io",
       // Allow credentials in requests
-      "Access-Control-Allow-Credentials": true,
+      "Access-Control-Allow-Credentials": "true",
     },
     // Return generated authentication URL
     body: JSON.stringify({ authUrl }),
@@ -65,7 +65,7 @@ module.exports.getAccessToken = async (event) => {
       statusCode: 200,
       headers: {
         "Access-Control-Allow-Origin": "https://jdeebs.github.io",
-        "Access-Control-Allow-Credentials": true,
+        "Access-Control-Allow-Credentials": "true",
       },
       body: JSON.stringify(results),
     }))
@@ -74,7 +74,7 @@ module.exports.getAccessToken = async (event) => {
       statusCode: 500,
       headers: {
         "Access-Control-Allow-Origin": "https://jdeebs.github.io",
-        "Access-Control-Allow-Credentials": true,
+        "Access-Control-Allow-Credentials": "true",
       },
       body: JSON.stringify({ error: error.message }),
     }));
@@ -112,7 +112,7 @@ module.exports.getCalendarEvents = async (event) => {
       statusCode: 200,
       headers: {
         "Access-Control-Allow-Origin": "https://jdeebs.github.io",
-        "Access-Control-Allow-Credentials": true,
+        "Access-Control-Allow-Credentials": "true",
       },
       body: JSON.stringify({ events: results.data.items }),
     }))
@@ -121,7 +121,7 @@ module.exports.getCalendarEvents = async (event) => {
       statusCode: 500,
       headers: {
         "Access-Control-Allow-Origin": "https://jdeebs.github.io",
-        "Access-Control-Allow-Credentials": true,
+        "Access-Control-Allow-Credentials": "true",
       },
       body: JSON.stringify({ error: error.message }),
     }));
