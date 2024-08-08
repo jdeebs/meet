@@ -33,7 +33,7 @@ export const getAccessToken = async () => {
       window.location.href = authUrl;
       return;
     }
-    return code && getToken(code);
+    return code && (await getToken(code));
   }
   return accessToken;
 };
