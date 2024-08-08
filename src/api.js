@@ -1,6 +1,6 @@
 import mockData from "./mock-data";
 
-export const checkToken = async (accessToken) => {
+const checkToken = async (accessToken) => {
   const response = await fetch(
     `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`
   );
@@ -8,38 +8,46 @@ export const checkToken = async (accessToken) => {
   return result;
 };
 
-export const getAccessToken = async () => {             
+export const getAccessToken = async () => {
   const accessToken = localStorage.getItem("access_token");
   const tokenCheck = accessToken && (await checkToken(accessToken));
 
-  if (!accessToken || tokenCheck.error) {
-    await localStorage.removeItem("access_token");
+  if (!accessToken || tokenCheck?.error) {
+    localStorage.removeItem("access_token");
     const searchParams = new URLSearchParams(window.location.search);
-    const code = await searchParams.get("code");
+    const code = searchParams.get("code");
     if (!code) {
       const response = await fetch(
         "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-auth-url"
       );
+      if (!response.ok) {
+        console.error(
+          "Failed to fetch auth URL:",
+          response.status,
+          response.statusText
+        );
+        throw new Error("Failed to fetch auth URL");
+      }
       const result = await response.json();
       const { authUrl } = result;
-      return (window.location.href = authUrl);
+      window.location.href = authUrl;
+      return;
     }
     return code && getToken(code);
   }
   return accessToken;
 };
 
-
-
-export const getToken = async (code) => {
+const getToken = async (code) => {
   try {
     const encodeCode = encodeURIComponent(code);
 
-    const url = "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/token";
+    const url =
+      "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/token";
 
-    const getUrl = `${url}` + "/" + `${encodeCode}`;
+    const getUrl = `${url}/${encodeCode}`;
     const response = await fetch(getUrl);
-    
+
     if (!response.ok) {
       // Parse the response as JSON
       const errorData = await response.json();
@@ -49,10 +57,13 @@ export const getToken = async (code) => {
       );
     }
     const { access_token } = await response.json();
-    access_token && localStorage.setItem("access_token", access_token);
+    if (access_token) {
+      localStorage.setItem("access_token", access_token);
+    }
     return access_token;
   } catch (error) {
-    return error;
+    console.error("Error in getToken:", error.message);
+    throw error;
   }
 };
 
@@ -94,19 +105,33 @@ export const getEvents = async (selectedCity = "") => {
   if (window.location.href.startsWith("http://localhost")) {
     events = mockData;
   } else {
-    const token = await getAccessToken();
-    if (token) {
-      removeQuery();
-      const url =
-        "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-events" +
-        "/" +
-        token;
-      const response = await fetch(url);
-      const result = await response.json();
-      events = result.events;
+    try {
+      const token = await getAccessToken();
+      if (token) {
+        removeQuery();
+        const url =
+          "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-events" +
+          "/" +
+          token;
+        const response = await fetch(url);
+        if (!response.ok) {
+          console.error(
+            "Failed to fetch events:",
+            response.status,
+            response.statusText
+          );
+          throw new Error("Failed to fetch events");
+        }
+        const result = await response.json();
+        events = result.events;
+      }
+    } catch (error) {
+      console.error("Error in getEvents:", error.message); // Log the error
+      events = [];
     }
   }
 
+  // If no events are fetched due to an error, return an empty array for a safe fallback
   if (!events) return [];
 
   // If a city is selected, filter events by that city
@@ -115,6 +140,5 @@ export const getEvents = async (selectedCity = "") => {
       event.location.toLowerCase().includes(selectedCity.toLowerCase())
     );
   }
-
   return events;
 };
