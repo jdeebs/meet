@@ -34,14 +34,12 @@ module.exports.getAuthURL = async () => {
     statusCode: 200,
     headers: {
       // Allow request from specific origin
-      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Origin": "https://jdeebs.github.io",
       // Allow credentials in requests
       "Access-Control-Allow-Credentials": true,
     },
-    body: JSON.stringify({
-      // Return generated authentication URL
-      authUrl,
-    }),
+    // Return generated authentication URL
+    body: JSON.stringify({ authUrl }),
   };
 };
 
@@ -56,29 +54,30 @@ module.exports.getAccessToken = async (event) => {
      */
     oAuth2Client.getToken(code, (error, response) => {
       if (error) {
+        console.error("Error getting token:", error);
         return reject(error);
       }
-      return resolve(response);
+      resolve(response);
     });
   })
-    .then((results) => {
+    .then((results) => ({
       // Respond with OAuth token
-      return {
-        statusCode: 200,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Credentials": true,
-        },
-        body: JSON.stringify(results),
-      };
-    })
-    .catch((error) => {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "https://jdeebs.github.io",
+        "Access-Control-Allow-Credentials": true,
+      },
+      body: JSON.stringify(results),
+    }))
+    .catch((error) => ({
       // Handle error
-      return {
-        statusCode: 500,
-        body: JSON.stringify(error),
-      };
-    });
+      statusCode: 500,
+      headers: {
+        "Access-Control-Allow-Origin": "https://jdeebs.github.io",
+        "Access-Control-Allow-Credentials": true,
+      },
+      body: JSON.stringify({ error: error.message }),
+    }));
 };
 
 module.exports.getCalendarEvents = async (event) => {
@@ -101,33 +100,29 @@ module.exports.getCalendarEvents = async (event) => {
       },
       (error, response) => {
         if (error) {
+          console.error("Error fetching events:", error);
           return reject(error);
         } else {
-          return resolve(response);
+          resolve(response);
         }
       }
     );
   })
-    .then((results) => {
-      // Respond with calendar events data
-      return {
-        statusCode: 200,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Credentials": true,
-        },
-        body: JSON.stringify({ events: results.data.items }),
-      };
-    })
-    .catch((error) => {
+    .then((results) => ({
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "https://jdeebs.github.io",
+        "Access-Control-Allow-Credentials": true,
+      },
+      body: JSON.stringify({ events: results.data.items }),
+    }))
+    .catch((error) => ({
       // Handle error
-      return {
-        statusCode: 500,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Credentials": true,
-        },
-        body: JSON.stringify(error),
-      };
-    });
+      statusCode: 500,
+      headers: {
+        "Access-Control-Allow-Origin": "https://jdeebs.github.io",
+        "Access-Control-Allow-Credentials": true,
+      },
+      body: JSON.stringify({ error: error.message }),
+    }));
 };
