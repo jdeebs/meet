@@ -1,14 +1,18 @@
 import { Component } from "react";
 
+// Superclass Alert component
 class Alert extends Component {
+  // Constructor method initializes an instance of the class
   constructor(props) {
+    // Ensure the parent class "Component" gets needed props
     super(props);
-    // Set colors to null by default
-    // Subclasses override them later
+    // Set default properties to null
+    // Subclasses will override these properties
     this.color = null;
     this.bgColor = null;
   }
 
+  // Method to generate inline styles based on component properties
   getStyle = () => {
     return {
       color: this.color,
@@ -25,6 +29,7 @@ class Alert extends Component {
     };
   };
 
+  // Render method to display the component
   render() {
     return (
       <div className="Alert">
@@ -34,11 +39,14 @@ class Alert extends Component {
   }
 }
 
+// Subclass of Alert
 class InfoAlert extends Alert {
+  // Initialize an instance for the subclass component
   constructor(props) {
     super(props);
-    this.color = "rgb(0, 0, 255)"; // blue
-    this.bgColor = "rgb(220, 220, 255)"; // light blue
+    // Override default(null) superclass properties
+    this.color = "rgb(0, 0, 255)"; // Blue text color
+    this.bgColor = "rgb(220, 220, 255)"; // Light blue bg
   }
 }
 
