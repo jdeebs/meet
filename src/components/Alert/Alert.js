@@ -4,7 +4,7 @@ import { Component } from "react";
 class Alert extends Component {
   // Constructor method initializes an instance of the class
   constructor(props) {
-    // Ensure the parent class "Component" gets needed props
+    // Access and call functions on objects parent class (Component in this case)
     super(props);
     // Set default properties to null
     // Subclasses will override these properties
@@ -50,4 +50,12 @@ class InfoAlert extends Alert {
   }
 }
 
-export { InfoAlert };
+class ErrorAlert extends Alert {
+  constructor(props) {
+    super(props);
+    this.color = "rgb(255, 25, 25)"; // Red text color
+    this.bgColor = "rgb(255, 166, 166)"; // Light red bg
+  }
+}
+
+export { InfoAlert, ErrorAlert };
