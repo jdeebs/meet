@@ -9,7 +9,7 @@ describe("<NumberOfEvents /> component", () => {
   beforeEach(() => {
     // Render the NumberOfEvents component and store getByTestId function
     const { getByTestId } = render(
-      <NumberOfEvents setNumberOfEvents={() => {}} />
+      <NumberOfEvents setNumberOfEvents={() => {}} setErrorAlert={() => {}} />
     );
     // Assign the input element to inputElement using getByTestId
     inputElement = getByTestId("number-input");
