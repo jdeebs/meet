@@ -46,6 +46,7 @@ const getToken = async (code) => {
       "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/token";
 
     const getUrl = `${url}/${encodeCode}`;
+    console.log(getUrl);
     const response = await fetch(getUrl);
 
     if (!response.ok) {
@@ -102,7 +103,7 @@ export const extractLocations = (events) => {
  */
 export const getEvents = async (selectedCity = "") => {
   let events;
-  if (window.location.href.startsWith("http://localhost")) {
+  if (!window.location.href.startsWith("http://localhost")) {
     events = mockData;
   } else {
     try {
