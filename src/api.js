@@ -1,4 +1,4 @@
-import mockData from "./mock-data";
+// import mockData from "./mock-data";
 
 const checkToken = async (accessToken) => {
   const response = await fetch(
@@ -29,10 +29,13 @@ export const getAccessToken = async () => {
         throw new Error("Failed to fetch auth URL");
       }
       const result = await response.json();
+      console.log("result:" + result);
       const { authUrl } = result;
+      console.log("auth url result:" + result);
       window.location.href = authUrl;
       return;
     }
+    console.log(code);
     return code && (await getToken(code));
   }
   return accessToken;
@@ -103,33 +106,33 @@ export const extractLocations = (events) => {
  */
 export const getEvents = async (selectedCity = "") => {
   let events;
-  if (window.location.href.startsWith("http://localhost")) {
-    events = mockData;
-  } else {
-    try {
-      const token = await getAccessToken();
-      if (token) {
-        removeQuery();
-        const url =
-          "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-events" +
-          "/" +
-          token;
-        const response = await fetch(url);
-        if (!response.ok) {
-          console.error(
-            "Failed to fetch events:",
-            response.status,
-            response.statusText
-          );
-          throw new Error("Failed to fetch events");
-        }
-        const result = await response.json();
-        events = result.events;
+  // Uncomment below to use mock data, wrap the try catch in the else { }
+  // if (!window.location.href.startsWith("http://localhost")) {
+  //   events = mockData;
+  // } else { }
+  try {
+    const token = await getAccessToken();
+    if (token) {
+      removeQuery();
+      const url =
+        "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-events" +
+        "/" +
+        token;
+      const response = await fetch(url);
+      if (!response.ok) {
+        console.error(
+          "Failed to fetch events:",
+          response.status,
+          response.statusText
+        );
+        throw new Error("Failed to fetch events");
       }
-    } catch (error) {
-      console.error("Error in getEvents:", error.message); // Log the error
-      events = [];
+      const result = await response.json();
+      events = result.events;
     }
+  } catch (error) {
+    console.error("Error in getEvents:", error.message); // Log the error
+    events = [];
   }
 
   // If no events are fetched due to an error, return an empty array for a safe fallback
