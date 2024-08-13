@@ -1,4 +1,4 @@
-// import mockData from "./mock-data";
+import mockData from "./mock-data";
 
 const checkToken = async (accessToken) => {
   const response = await fetch(
@@ -105,35 +105,38 @@ export const extractLocations = (events) => {
 export const getEvents = async (selectedCity = "") => {
   let events;
   const token = await getAccessToken();
-  // Uncomment below to use mock data, wrap the try catch in the else { }
-  // if (!window.location.href.startsWith("http://localhost")) {
-  //   events = mockData;
-  // } else { }
-  try {
-    if (token) {
-      removeQuery();
-      const url =
-        "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-events" +
-        "/" +
-        token;
-      const response = await fetch(url);
-      const result = await response.json();
-      if (!response.ok) {
-        console.error(
-          "Failed to fetch events:",
-          response.status,
-          response.statusText
-        );
-        throw new Error("Failed to fetch events");
+
+  // Use mock data on local host
+  if (window.location.href.startsWith("http://localhost")) {
+    events = mockData;
+    return events;
+  } else {
+    try {
+      if (token) {
+        removeQuery();
+        const url =
+          "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-events" +
+          "/" +
+          token;
+        const response = await fetch(url);
+        const result = await response.json();
+        if (!response.ok) {
+          console.error(
+            "Failed to fetch events:",
+            response.status,
+            response.statusText
+          );
+          throw new Error("Failed to fetch events");
+        }
+        if (result) {
+          localStorage.setItem("lastEvents", JSON.stringify(result.events));
+          return result.events;
+        } else return null;
       }
-      if (result) {
-        localStorage.setItem("lastEvents", JSON.stringify(result.events));
-        return result.events;
-      } else return null;
+    } catch (error) {
+      console.error("Error in getEvents:", error.message); // Log the error
+      events = [];
     }
-  } catch (error) {
-    console.error("Error in getEvents:", error.message); // Log the error
-    events = [];
   }
 
   // If no events are fetched due to an error, return an empty array for a safe fallback
