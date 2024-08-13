@@ -9,53 +9,51 @@ const checkToken = async (accessToken) => {
 };
 
 export const getAccessToken = async () => {
-  const accessToken = localStorage.getItem("access_token");
-  const tokenCheck = accessToken && (await checkToken(accessToken));
+  try {
+    const accessToken = localStorage.getItem("access_token");
+    const tokenCheck = accessToken && (await checkToken(accessToken));
 
-  if (!accessToken || tokenCheck?.error) {
-    localStorage.removeItem("access_token");
-    const searchParams = new URLSearchParams(window.location.search);
-    const code = searchParams.get("code");
-    if (!code) {
-      const response = await fetch(
-        "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-auth-url"
-      );
-      if (!response.ok) {
-        console.error(
-          "Failed to fetch auth URL:",
-          response.status,
-          response.statusText
+    if (!accessToken || tokenCheck?.error) {
+      await localStorage.removeItem("access_token");
+      const searchParams = new URLSearchParams(window.location.search);
+      const code = await searchParams.get("code");
+      if (!code) {
+        const response = await fetch(
+          "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-auth-url"
         );
-        throw new Error("Failed to fetch auth URL");
+        if (!response.ok) {
+          console.error(
+            "Failed to fetch auth URL:",
+            response.status,
+            response.statusText
+          );
+          throw new Error("Failed to fetch auth URL");
+        }
+        const result = await response.json();
+        const { authUrl } = result;
+        window.location.href = authUrl;
+        return;
       }
-      const result = await response.json();
-      console.log("result:" + result);
-      const { authUrl } = result;
-      console.log("auth url result:" + result);
-      window.location.href = authUrl;
-      return;
+      return code && getToken(code);
     }
-    console.log(code);
-    return code && (await getToken(code));
+    return accessToken;
+  } catch (error) {
+    console.error("Error in getAccessToken:", error);
+    throw error;
   }
-  return accessToken;
 };
 
 const getToken = async (code) => {
   try {
     const encodeCode = encodeURIComponent(code);
-
-    const url =
-      "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/token";
-
-    const getUrl = `${url}/${encodeCode}`;
-    console.log(getUrl);
-    const response = await fetch(getUrl);
-
+    const response = await fetch(
+      "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/token" +
+        "/" +
+        encodeCode
+    );
     if (!response.ok) {
       // Parse the response as JSON
       const errorData = await response.json();
-
       throw new Error(
         `HTTP error! status: ${response.status}, ${errorData.message}`
       );
@@ -106,12 +104,12 @@ export const extractLocations = (events) => {
  */
 export const getEvents = async (selectedCity = "") => {
   let events;
+  const token = await getAccessToken();
   // Uncomment below to use mock data, wrap the try catch in the else { }
   // if (!window.location.href.startsWith("http://localhost")) {
   //   events = mockData;
   // } else { }
   try {
-    const token = await getAccessToken();
     if (token) {
       removeQuery();
       const url =
@@ -119,6 +117,7 @@ export const getEvents = async (selectedCity = "") => {
         "/" +
         token;
       const response = await fetch(url);
+      const result = await response.json();
       if (!response.ok) {
         console.error(
           "Failed to fetch events:",
@@ -127,8 +126,10 @@ export const getEvents = async (selectedCity = "") => {
         );
         throw new Error("Failed to fetch events");
       }
-      const result = await response.json();
-      events = result.events;
+      if (result) {
+        localStorage.setItem("lastEvents", JSON.stringify(result.events));
+        return result.events;
+      } else return null;
     }
   } catch (error) {
     console.error("Error in getEvents:", error.message); // Log the error
@@ -144,5 +145,4 @@ export const getEvents = async (selectedCity = "") => {
       event.location.toLowerCase().includes(selectedCity.toLowerCase())
     );
   }
-  return events;
 };
