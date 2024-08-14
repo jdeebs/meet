@@ -2,5 +2,8 @@
     "cSpell.ignoreWords": [
         "predeploy"
     ],
-    "git.ignoreLimitWarning": true
+    "git.ignoreLimitWarning": true,
+    "cSpell.words": [
+        "webfonts"
+    ]
 }
