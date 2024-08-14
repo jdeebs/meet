@@ -103,50 +103,44 @@ export const extractLocations = (events) => {
  * This function will fetch the list of all events
  */
 export const getEvents = async (selectedCity = "") => {
-  let events;
+  let events = [];
   NProgress.start();
 
   try {
     // Check if app is running locally
     if (window.location.href.startsWith("http://localhost")) {
       events = mockData;
-      NProgress.done();
-      return events;
     }
 
     // Handle when the user is offline
-    if (!navigator.onLine) {
+    else if (!navigator.onLine) {
       const storedEvents = localStorage.getItem("lastEvents");
-      NProgress.done();
-      return storedEvents ? JSON.parse(storedEvents) : [];
+      events = storedEvents ? JSON.parse(storedEvents) : [];
     }
 
     // Handle when the user is online
-    const token = await getAccessToken();
-    if (token) {
-      removeQuery();
-      const url =
-        "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-events" +
-        "/" +
-        token;
-      const response = await fetch(url);
-      if (!response.ok) {
-        console.error(
-          "Failed to fetch events:",
-          response.status,
-          response.statusText
-        );
-        NProgress.done();
-        throw new Error("Failed to fetch events");
+    else {
+      const token = await getAccessToken();
+      if (token) {
+        removeQuery();
+        const url =
+          "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-events" +
+          "/" +
+          token;
+        const response = await fetch(url);
+        if (!response.ok) {
+          console.error(
+            "Failed to fetch events:",
+            response.status,
+            response.statusText
+          );
+          throw new Error("Failed to fetch events");
+        }
+        const result = await response.json();
+        // Extract events from the response and store in local storage
+        events = result.events;
+        localStorage.setItem("lastEvents", JSON.stringify(events));
       }
-
-      const result = await response.json();
-      // Extract events from the response and store in local storage
-      events = result.events;
-      localStorage.setItem("lastEvents", JSON.stringify(events));
-    } else {
-      // If no token, set events to an empty array
-      events = [];
     }
   } catch (error) {
     console.error("Error in getEvents:", error.message);
