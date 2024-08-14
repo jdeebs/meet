@@ -105,45 +105,57 @@ export const extractLocations = (events) => {
 export const getEvents = async (selectedCity = "") => {
   let events;
   NProgress.start();
-  if (window.location.href.startsWith("http://localhost")) {
-    NProgress.done();
-    events = mockData;
-  }
 
-  if (!navigator.onLine) {
-    const events = localStorage.getItem("lastEvents");
-    NProgress.done();
-    return events ? JSON.parse(events) : [];
-  }
-
-  const token = await getAccessToken();
-  if (token) {
-    removeQuery();
-    const url =
-      "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-events" +
-      "/" +
-      token;
-    const response = await fetch(url);
-    const result = await response.json();
-    if (result) {
+  try {
+    // Check if app is running locally
+    if (window.location.href.startsWith("http://localhost")) {
+      events = mockData;
       NProgress.done();
-      // localStorage can only store strings so JSON.stringify is needed
-      localStorage.setItem("lastEvents", JSON.stringify(result.events));
-      return (events = result.events);
+      return events;
     }
-    if (!response.ok) {
-      console.error(
-        "Failed to fetch events:",
-        response.status,
-        response.statusText
-      );
-      NProgress.done();
-      throw new Error("Failed to fetch events");
-    }
-  }
 
-  // If no events are fetched due to an error, return an empty array for a safe fallback
-  if (!events) return [];
+    // Handle when the user is offline
+    if (!navigator.onLine) {
+      const storedEvents = localStorage.getItem("lastEvents");
+      NProgress.done();
+      return storedEvents ? JSON.parse(storedEvents) : [];
+    }
+
+    // Handle when the user is online
+    const token = await getAccessToken();
+    if (token) {
+      removeQuery();
+      const url =
+        "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-events" +
+        "/" +
+        token;
+      const response = await fetch(url);
+      if (!response.ok) {
+        console.error(
+          "Failed to fetch events:",
+          response.status,
+          response.statusText
+        );
+        NProgress.done();
+        throw new Error("Failed to fetch events");
+      }
+
+      const result = await response.json();
+      // Extract events from the response and store in local storage
+      events = result.events;
+      localStorage.setItem("lastEvents", JSON.stringify(events));
+    } else {
+      // If no token, set events to an empty array
+      events = [];
+    }
+  } catch (error) {
+    console.error("Error in getEvents:", error.message);
+    // If error, set events to an empty array
+    events = [];
+  } finally {
+    // Ensure progress bar is always ended
+    NProgress.done();
+  }
 
   // If a city is selected, filter events by that city
   if (selectedCity && selectedCity !== "See all cities") {
@@ -151,5 +163,6 @@ export const getEvents = async (selectedCity = "") => {
       event.location.toLowerCase().includes(selectedCity.toLowerCase())
     );
   }
+  // Return filtered or unfiltered events
   return events;
 };
