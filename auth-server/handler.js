@@ -60,15 +60,17 @@ module.exports.getAccessToken = async (event) => {
       return resolve(response);
     });
   })
-    .then((results) => ({
+    .then((results) => {
       // Respond with OAuth token
-      statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": "true",
-      },
-      body: JSON.stringify(results),
-    }))
+      return {
+        statusCode: 200,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Credentials": "true",
+        },
+        body: JSON.stringify(results),
+      };
+    })
     .catch((error) => {
       // Handle error
       return {
