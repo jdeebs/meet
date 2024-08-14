@@ -104,14 +104,11 @@ export const extractLocations = (events) => {
  */
 export const getEvents = async (selectedCity = "") => {
   let events;
-  const token = await getAccessToken();
-
-  // Use mock data on local host
   if (window.location.href.startsWith("http://localhost")) {
     events = mockData;
-    return events;
   } else {
     try {
+      const token = await getAccessToken();
       if (token) {
         removeQuery();
         const url =
@@ -119,7 +116,6 @@ export const getEvents = async (selectedCity = "") => {
           "/" +
           token;
         const response = await fetch(url);
-        const result = await response.json();
         if (!response.ok) {
           console.error(
             "Failed to fetch events:",
@@ -128,10 +124,8 @@ export const getEvents = async (selectedCity = "") => {
           );
           throw new Error("Failed to fetch events");
         }
-        if (result) {
-          localStorage.setItem("lastEvents", JSON.stringify(result.events));
-          return result.events;
-        } else return null;
+        const result = await response.json();
+        events = result.events;
       }
     } catch (error) {
       console.error("Error in getEvents:", error.message); // Log the error
@@ -148,4 +142,5 @@ export const getEvents = async (selectedCity = "") => {
       event.location.toLowerCase().includes(selectedCity.toLowerCase())
     );
   }
+  return events;
 };
