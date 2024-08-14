@@ -1,4 +1,5 @@
 import mockData from "./mock-data";
+import NProgress from "nprogress";
 
 const checkToken = async (accessToken) => {
   const response = await fetch(
@@ -31,8 +32,7 @@ export const getAccessToken = async () => {
         }
         const result = await response.json();
         const { authUrl } = result;
-        window.location.href = authUrl;
-        return;
+        return (window.location.href = authUrl);
       }
       return code && getToken(code);
     }
@@ -104,12 +104,15 @@ export const extractLocations = (events) => {
  */
 export const getEvents = async (selectedCity = "") => {
   let events;
+  NProgress.start();
   if (window.location.href.startsWith("http://localhost")) {
+    NProgress.done();
     events = mockData;
   }
 
   if (!navigator.onLine) {
     const events = localStorage.getItem("lastEvents");
+    NProgress.done();
     return events ? JSON.parse(events) : [];
   }
 
@@ -123,6 +126,7 @@ export const getEvents = async (selectedCity = "") => {
     const response = await fetch(url);
     const result = await response.json();
     if (result) {
+      NProgress.done();
       // localStorage can only store strings so JSON.stringify is needed
       localStorage.setItem("lastEvents", JSON.stringify(result.events));
       return (events = result.events);
@@ -133,6 +137,7 @@ export const getEvents = async (selectedCity = "") => {
         response.status,
         response.statusText
       );
+      NProgress.done();
       throw new Error("Failed to fetch events");
     }
   }
