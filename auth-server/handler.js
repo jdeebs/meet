@@ -57,7 +57,7 @@ module.exports.getAccessToken = async (event) => {
         console.error("Error getting token:", error);
         return reject(error);
       }
-      resolve(response);
+      return resolve(response);
     });
   })
     .then((results) => ({
@@ -69,15 +69,13 @@ module.exports.getAccessToken = async (event) => {
       },
       body: JSON.stringify(results),
     }))
-    .catch((error) => ({
+    .catch((error) => {
       // Handle error
-      statusCode: 500,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": "true",
-      },
-      body: JSON.stringify({ error: error.message }),
-    }));
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: error.message }),
+      };
+    });
 };
 
 module.exports.getCalendarEvents = async (event) => {
@@ -103,26 +101,26 @@ module.exports.getCalendarEvents = async (event) => {
           console.error("Error fetching events:", error);
           return reject(error);
         } else {
-          resolve(response);
+          return resolve(response);
         }
       }
     );
   })
-    .then((results) => ({
-      statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": "true",
-      },
-      body: JSON.stringify({ events: results.data.items }),
-    }))
-    .catch((error) => ({
+    .then((results) => {
+      return {
+        statusCode: 200,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Credentials": "true",
+        },
+        body: JSON.stringify({ events: results.data.items }),
+      };
+    })
+    .catch((error) => {
       // Handle error
-      statusCode: 500,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": "true",
-      },
-      body: JSON.stringify({ error: error.message }),
-    }));
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: error.message }),
+      };
+    });
 };
