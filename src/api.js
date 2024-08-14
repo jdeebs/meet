@@ -1,4 +1,3 @@
-import NProgress from 'nprogress';
 import mockData from "./mock-data";
 
 const checkToken = async (accessToken) => {
@@ -107,40 +106,34 @@ export const getEvents = async (selectedCity = "") => {
   let events;
   if (window.location.href.startsWith("http://localhost")) {
     events = mockData;
-  } else {
-    try {
-      if (!navigator.onLine) {
-        const events = localStorage.getItem("lastEvents");
-        NProgress.done();
-        return events ? JSON.parse(events) : [];
-      }
-      const token = await getAccessToken();
-      if (token) {
-        removeQuery();
-        const url =
-          "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-events" +
-          "/" +
-          token;
-        const response = await fetch(url);
-        const result = await response.json();
-        if (result) {
-          NProgress.done();
-          // localStorage can only store strings so JSON.stringify is needed
-          localStorage.setItem("lastEvents", JSON.stringify(result.events));
-          return (events = result.events);
-        }
-        if (!response.ok) {
-          console.error(
-            "Failed to fetch events:",
-            response.status,
-            response.statusText
-          );
-          throw new Error("Failed to fetch events");
-        }
-      }
-    } catch (error) {
-      console.error("Error in getEvents:", error.message); // Log the error
-      events = [];
+  }
+
+  if (!navigator.onLine) {
+    const events = localStorage.getItem("lastEvents");
+    return events ? JSON.parse(events) : [];
+  }
+
+  const token = await getAccessToken();
+  if (token) {
+    removeQuery();
+    const url =
+      "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-events" +
+      "/" +
+      token;
+    const response = await fetch(url);
+    const result = await response.json();
+    if (result) {
+      // localStorage can only store strings so JSON.stringify is needed
+      localStorage.setItem("lastEvents", JSON.stringify(result.events));
+      return (events = result.events);
+    }
+    if (!response.ok) {
+      console.error(
+        "Failed to fetch events:",
+        response.status,
+        response.statusText
+      );
+      throw new Error("Failed to fetch events");
     }
   }
 
