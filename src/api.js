@@ -1,3 +1,4 @@
+import NProgress from 'nprogress';
 import mockData from "./mock-data";
 
 const checkToken = async (accessToken) => {
@@ -108,6 +109,11 @@ export const getEvents = async (selectedCity = "") => {
     events = mockData;
   } else {
     try {
+      if (!navigator.onLine) {
+        const events = localStorage.getItem("lastEvents");
+        NProgress.done();
+        return events ? JSON.parse(events) : [];
+      }
       const token = await getAccessToken();
       if (token) {
         removeQuery();
@@ -116,6 +122,13 @@ export const getEvents = async (selectedCity = "") => {
           "/" +
           token;
         const response = await fetch(url);
+        const result = await response.json();
+        if (result) {
+          NProgress.done();
+          // localStorage can only store strings so JSON.stringify is needed
+          localStorage.setItem("lastEvents", JSON.stringify(result.events));
+          return (events = result.events);
+        }
         if (!response.ok) {
           console.error(
             "Failed to fetch events:",
@@ -124,8 +137,6 @@ export const getEvents = async (selectedCity = "") => {
           );
           throw new Error("Failed to fetch events");
         }
-        const result = await response.json();
-        events = result.events;
       }
     } catch (error) {
       console.error("Error in getEvents:", error.message); // Log the error
