@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import CitySearch from "./components/CitySearch/CitySearch";
 import EventList from "./components/EventList/EventList";
 import NumberOfEvents from "./components/NumberOfEvents/NumberOfEvents";
-import { InfoAlert, ErrorAlert } from "./components/Alert/Alert";
+import { InfoAlert, ErrorAlert, WarningAlert } from "./components/Alert/Alert";
 import { getEvents } from "./api";
 import "./App.css";
 
@@ -14,6 +14,7 @@ const App = () => {
   const [selectedCity, setSelectedCity] = useState("");
   const [infoAlert, setInfoAlert] = useState("");
   const [errorAlert, setErrorAlert] = useState("");
+  const [warningAlert, setWarningAlert] = useState("");
 
   // Hook to fetch data whenever numberOfEvents or selectedCity changes
   useEffect(() => {
@@ -21,6 +22,12 @@ const App = () => {
       const events = await getEvents(selectedCity);
       setEvents(events.slice(0, numberOfEvents));
     };
+    // Display warning message if user is offline
+    if (!navigator.onLine) {
+      setWarningAlert("You are currently offline. New events will not update until a connection is established.");
+    } else {
+      setWarningAlert("");
+    }
     fetchData();
   }, [numberOfEvents, selectedCity]);
 
@@ -34,6 +41,7 @@ const App = () => {
       <div className="alerts-container">
         {infoAlert.length ? <InfoAlert text={infoAlert} /> : null}
         {errorAlert.length ? <ErrorAlert text={errorAlert} /> : null}
+        {warningAlert.length ? <WarningAlert text={warningAlert} /> : null}
       </div>
       <h1 id="title">Meet App</h1>
       <CitySearch
