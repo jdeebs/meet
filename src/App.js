@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import CitySearch from "./components/CitySearch/CitySearch";
 import EventList from "./components/EventList/EventList";
 import NumberOfEvents from "./components/NumberOfEvents/NumberOfEvents";
+import CityEventsChart from "./components/CityEventsChart/CityEventsChart"
 import { InfoAlert, ErrorAlert, WarningAlert } from "./components/Alert/Alert";
 import { getEvents } from "./api";
 import "./App.css";
 
 const App = () => {
+  const [allLocations, setAllLocations] = useState([]);
   const [events, setEvents] = useState([]);
   // State for current number of events to be displayed
   const [numberOfEvents, setNumberOfEvents] = useState(32);
@@ -19,6 +21,8 @@ const App = () => {
   // Hook to fetch data whenever numberOfEvents or selectedCity changes
   useEffect(() => {
     const fetchData = async () => {
+      const allEvents = await getEvents();
+      setAllLocations(allEvents);
       const events = await getEvents(selectedCity);
       setEvents(events.slice(0, numberOfEvents));
     };
@@ -52,6 +56,7 @@ const App = () => {
         setNumberOfEvents={setNumberOfEvents}
         setErrorAlert={setErrorAlert}
       />
+      <CityEventsChart allLocations={allLocations} events={events} />
       <EventList events={events} />
     </div>
   );
