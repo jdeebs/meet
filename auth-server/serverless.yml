@@ -23,18 +23,33 @@ functions:
       - http:
           path: get-auth-url
           method: get
-          cors: true
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
   getAccessToken:
     handler: handler.getAccessToken
     events:
       - http:
           path: token/{code}
           method: get
-          cors: true
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
   getCalendarEvents:
     handler: handler.getCalendarEvents
     events:
       - http:
           path: get-events/{access_token}
           method: get
-          cors: true
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
