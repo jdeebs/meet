@@ -14,17 +14,16 @@ const CityEventsChart = ({ allLocations, events }) => {
 
   useEffect(() => {
     setData(getData());
-  }, [`${data}`]);
+  }, [allLocations, events]);
 
   const getData = () => {
-    const data = allLocations.map((location) => {
+    return allLocations.map((location) => {
       const count = events.filter(
         (event) => event.location === location
       ).length;
       const city = location.split(", ")[0];
       return { city, count };
     });
-    return data;
   };
 
   return (
@@ -46,7 +45,7 @@ const CityEventsChart = ({ allLocations, events }) => {
           allowDecimals={false}
         />
         <Tooltip cursor={{ strokeDasharray: "3 3" }} />
-        <Scatter name="A school" data={data} fill="#8884d8" />
+        <Scatter name="Events" data={data} fill="#8884d8" />
       </ScatterChart>
     </ResponsiveContainer>
   );
