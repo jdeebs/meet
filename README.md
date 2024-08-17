@@ -9,7 +9,7 @@ The **Meet App** project is a serverless, progressive web application (PWA) buil
 - [Project Overview](#project-overview)
 - [Features](#features)
 - [User Stories](#user-stories)
-- [Scenarios In Gherkin Syntax](#scenarios-in-gherkin)
+- [Scenarios In Gherkin Syntax](#scenarios-in-gherkin-syntax)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Testing](#testing)
@@ -100,11 +100,52 @@ Feature: Display Charts Visualizing Event Details
 
 ## Installation
 
+1. **Clone the repository:**
+
+    ```sh
+    git clone https://github.com/jdeebs/meet.git
+    ```
+
+2. **Navigate to the project directory:**
+
+    ```sh
+    cd meet
+    ```
+
+3. **Install dependencies:**
+
+    ```sh
+    npm install
+    ```
+
+4. **Start the application locally:**
+
+    ```sh
+    npm run start
+    ```
+
 ## Usage
+
+1. Log in using your google account.
+2. Search for specific events, change the number of events displayed, and view event details.
+3. Use the app offline. Access event information without an internet connection.
+4. Add a shortcut to your home screen for quick access.
 
 ## Testing
 
+Tests are written with Jest and Puppeteeer.
+
+1. Run tests:
+
+    ```
+    npm run test
+    ```
+    
+    **Note:** Ensure Puppeteer is version 18.1.0 or older for compatibility.
+    
 ## Deployment
+
+The Meet app is deployed on GitHub Pages and can be accessed [here](https://jdeebs.github.io/meet).
 
 ## Contributing
 
