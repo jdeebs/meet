@@ -4,7 +4,7 @@ import EventList from "./components/EventList/EventList";
 import NumberOfEvents from "./components/NumberOfEvents/NumberOfEvents";
 import CityEventsChart from "./components/CityEventsChart/CityEventsChart"
 import { InfoAlert, ErrorAlert, WarningAlert } from "./components/Alert/Alert";
-import { getEvents } from "./api";
+import { getEvents, extractLocations } from "./api";
 import "./App.css";
 
 const App = () => {
@@ -22,9 +22,10 @@ const App = () => {
   useEffect(() => {
     const fetchData = async () => {
       const allEvents = await getEvents();
-      setAllLocations(allEvents);
-      const events = await getEvents(selectedCity);
-      setEvents(events.slice(0, numberOfEvents));
+      const locations = extractLocations(allEvents);
+      setAllLocations(locations);
+      const filteredEvents = await getEvents(selectedCity);
+      setEvents(filteredEvents.slice(0, numberOfEvents));
     };
     // Display warning message if user is offline
     if (!navigator.onLine) {
