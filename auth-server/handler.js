@@ -75,6 +75,7 @@ module.exports.getAccessToken = async (event) => {
     .catch((error) => {
       // Handle error
       return {
+        "Access-Control-Allow-Origin": "*",
         statusCode: 500,
         body: JSON.stringify({ error: error.message }),
       };
