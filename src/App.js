@@ -25,26 +25,30 @@ const App = () => {
   const checkToken = useCheckToken()
   console.log('checkToken =', checkToken)
 
-  // Hook to fetch data whenever numberOfEvents or selectedCity changes
-  useEffect(() => {
-    const fetchData = async () => {
-      const allEvents = await getEvents();
-      const locations = extractLocations(allEvents);
-      setAllLocations(locations);
-      const filteredEvents = await getEvents(selectedCity);
-      setEvents(filteredEvents.slice(0, numberOfEvents));
-    };
-    // Display warning message if user is offline
-    if (!navigator.onLine) {
-      setWarningAlert("You are currently offline. New events will not update until a connection is established.");
-    } else {
-      setWarningAlert("");
-    }
 
-    if(checkToken) {
-      fetchData();
-    }
-  }, [numberOfEvents, selectedCity, checkToken]);
+
+  // Hook to fetch data whenever numberOfEvents or selectedCity changes
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const allEvents = await getEvents();
+  //     const locations = extractLocations(allEvents);
+  //     setAllLocations(locations);
+  //     const filteredEvents = await getEvents(selectedCity);
+  //     setEvents(filteredEvents.slice(0, numberOfEvents));
+  //   };
+  //   // Display warning message if user is offline
+  //   if (!navigator.onLine) {
+  //     setWarningAlert("You are currently offline. New events will not update until a connection is established.");
+  //   } else {
+  //     setWarningAlert("");
+  //   }
+
+  //   // if(checkToken) {
+  //   //   fetchData();
+  //   // }
+
+  //   fetchData()
+  // }, [numberOfEvents, selectedCity]);
 
   // Handler function to update the selectedCity state
   const handleCitySelection = async (city) => {
@@ -69,7 +73,9 @@ const App = () => {
         setErrorAlert={setErrorAlert}
       />
       <CityEventsChart allLocations={allLocations} events={events} />
-      <EventList events={events} />
+      {checkToken && (
+        <EventList events={events} />
+      )}
     </div>
   );
 };
