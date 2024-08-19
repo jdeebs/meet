@@ -108,19 +108,18 @@ export const getEvents = async (selectedCity = "") => {
 
   try {
     // Check if app is running locally
-    if (window.location.href.startsWith("http://localhost")) {
-      events = mockData;
-    }
-
-    // Handle when the user is offline
-    else if (!navigator.onLine) {
+    // if (window.location.href.startsWith("http://localhost")) {
+    //   // in dev mode we are going in here
+    //   events = mockData;
+    // } else 
+    if (!navigator.onLine) { // Handle when the user is offline
       const storedEvents = localStorage.getItem("lastEvents");
       events = storedEvents ? JSON.parse(storedEvents) : [];
-    }
-
-    // Handle when the user is online
-    else {
+    } else { // Handle when the user is online
       const token = await getAccessToken();
+
+      console.log('token =', token)
+
       if (token) {
         removeQuery();
         const url =
@@ -142,6 +141,7 @@ export const getEvents = async (selectedCity = "") => {
         localStorage.setItem("lastEvents", JSON.stringify(events));
       }
     }
+
   } catch (error) {
     console.error("Error in getEvents:", error.message);
     // If error, set events to an empty array
