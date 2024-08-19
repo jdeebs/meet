@@ -13,7 +13,6 @@ const SCOPES = [
 const { CLIENT_SECRET, CLIENT_ID, CALENDAR_ID } = process.env;
 // Define the redirect URI after OAuth2 authentication
 const redirect_uris = ["https://jdeebs.github.io/meet/"];
-// const redirect_uris = ['http://localhost:3000/meet/']
 
 // Create new OAuth2 client with given credentials and redirect URI
 const oAuth2Client = new google.auth.OAuth2(
@@ -37,7 +36,7 @@ module.exports.getAuthURL = async () => {
       // Allow request from specific origin
       "Access-Control-Allow-Origin": "*",
       // Allow credentials in requests
-      // "Access-Control-Allow-Credentials": "true",
+      "Access-Control-Allow-Credentials": "true",
     },
     // Return generated authentication URL
     body: JSON.stringify({ authUrl }),
@@ -67,7 +66,7 @@ module.exports.getAccessToken = async (event) => {
         statusCode: 200,
         headers: {
           "Access-Control-Allow-Origin": "*",
-          // "Access-Control-Allow-Credentials": "true",
+          "Access-Control-Allow-Credentials": "true",
         },
         body: JSON.stringify(results),
       };
@@ -115,7 +114,7 @@ module.exports.getCalendarEvents = async (event) => {
         statusCode: 200,
         headers: {
           "Access-Control-Allow-Origin": "*",
-          // "Access-Control-Allow-Credentials": "true",
+          "Access-Control-Allow-Credentials": "true",
         },
         body: JSON.stringify({ events: results.data.items }),
       };
