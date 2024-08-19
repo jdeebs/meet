@@ -12,8 +12,8 @@ const SCOPES = [
 // Destructure environment variables for client credentials and calendar ID
 const { CLIENT_SECRET, CLIENT_ID, CALENDAR_ID } = process.env;
 // Define the redirect URI after OAuth2 authentication
-// const redirect_uris = ["https://jdeebs.github.io/meet/"];
-const redirect_uris = ['http://localhost:3000/meet/']
+const redirect_uris = ["https://jdeebs.github.io/meet/"];
+// const redirect_uris = ['http://localhost:3000/meet/']
 
 // Create new OAuth2 client with given credentials and redirect URI
 const oAuth2Client = new google.auth.OAuth2(
