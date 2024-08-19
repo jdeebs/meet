@@ -28,7 +28,7 @@ functions:
             headers:
               - Content-Type
               - Authorization
-            allowCredentials: true
+            # allowCredentials: true
   getAccessToken:
     handler: handler.getAccessToken
     events:
@@ -40,7 +40,7 @@ functions:
             headers:
               - Content-Type
               - Authorization
-            allowCredentials: true
+            # allowCredentials: true
   getCalendarEvents:
     handler: handler.getCalendarEvents
     events:
@@ -52,4 +52,4 @@ functions:
             headers:
               - Content-Type
               - Authorization
-            allowCredentials: true
+            # allowCredentials: true
