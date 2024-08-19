@@ -1,9 +1,11 @@
-import express from 'express'
+import express, { json } from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
+import bodyParser from 'body-parser'
 // Import Google APIs client library
 // const { google } = require("googleapis");
 import { google } from 'googleapis'
+
 
 
 // load variables from .env file
@@ -16,6 +18,7 @@ const corsOption = {
 const app = express()
 
 app.use(cors(corsOption))
+app.use(bodyParser.json())
 
 
 // Initialize calendar API
@@ -59,7 +62,7 @@ app.get("/get-auth-url", async function(req, res) {
 })
 
 app.get("/get-access-token", async function(req, res) {
-  
+
 })
 
 app.listen(process.env.PORT, function() {
