@@ -34,7 +34,8 @@ export const getAccessToken = async () => {
         const { authUrl } = result;
         return (window.location.href = authUrl);
       }
-      return code && getToken(code);
+      // Remove query parameter after processing it to avoid potentially triggering twice simultaneously, resulting in a CORS error and 500 response
+      return code && (await getToken(code)).then(() => removeQuery());
     }
     return accessToken;
   } catch (error) {
@@ -45,6 +46,9 @@ export const getAccessToken = async () => {
 
 const getToken = async (code) => {
   try {
+    // Immediately clear the query string to prevent multiple calls
+    removeQuery();
+    
     const encodeCode = encodeURIComponent(code);
     const response = await fetch(
       "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/token" +
