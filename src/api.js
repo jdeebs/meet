@@ -20,7 +20,8 @@ export const getAccessToken = async () => {
       const code = searchParams.get("code");
       if (!code) {
         const response = await fetch(
-          "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-auth-url"
+          // "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-auth-url"
+          "http://localhost:8000/get-auth-url"
         );
         if (!response.ok) {
           console.error(
@@ -47,9 +48,10 @@ const getToken = async (code) => {
   try {
     const encodeCode = encodeURIComponent(code);
     const response = await fetch(
-      "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/token" +
-        "/" +
-        encodeCode
+      // "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/token" +
+      //   "/" +
+      //   encodeCode
+      "http://localhost:8000/get-access-token/" + encodeCode
     );
     if (!response.ok) {
       // Parse the response as JSON
@@ -102,6 +104,63 @@ export const extractLocations = (events) => {
  *
  * This function will fetch the list of all events
  */
+// export const getEvents = async (selectedCity = "") => {
+//   let events = [];
+//   NProgress.start();
+
+//   try {
+//     // Check if app is running locally
+//     if (window.location.href.startsWith("http://localhost")) {
+//       // in dev mode we are going in here
+//       events = mockData;
+//     } else if (!navigator.onLine) { // Handle when the user is offline
+//       const storedEvents = localStorage.getItem("lastEvents");
+//       events = storedEvents ? JSON.parse(storedEvents) : [];
+//     } else { // Handle when the user is online
+//       const token = await getAccessToken();
+
+//       console.log('token =', token)
+
+//       if (token) {
+//         removeQuery();
+//         const url = `http://localhost:8000/get-calendar-events/${token}`;
+//           // "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-events" +
+//           // "/" +
+//           // token;
+//         const response = await fetch(url);
+//         if (!response.ok) {
+//           console.error(
+//             "Failed to fetch events:",
+//             response.status,
+//             response.statusText
+//           );
+//           throw new Error("Failed to fetch events");
+//         }
+//         const result = await response.json();
+//         // Extract events from the response and store in local storage
+//         events = result.events;
+//         localStorage.setItem("lastEvents", JSON.stringify(events));
+//       }
+//     }
+
+//   } catch (error) {
+//     console.error("Error in getEvents:", error.message);
+//     // If error, set events to an empty array
+//     events = [];
+//   } finally {
+//     // Ensure progress bar is always ended
+//     NProgress.done();
+//   }
+
+//   // If a city is selected, filter events by that city
+//   if (selectedCity && selectedCity !== "See all cities") {
+//     events = events.filter((event) =>
+//       event.location.toLowerCase().includes(selectedCity.toLowerCase())
+//     );
+//   }
+//   // Return filtered or unfiltered events
+//   return events;
+// };
 export const getEvents = async (selectedCity = "") => {
   let events = [];
   NProgress.start();
@@ -109,22 +168,10 @@ export const getEvents = async (selectedCity = "") => {
   try {
     // Check if app is running locally
     if (window.location.href.startsWith("http://localhost")) {
-      // in dev mode we are going in here
-      events = mockData;
-    } else if (!navigator.onLine) { // Handle when the user is offline
-      const storedEvents = localStorage.getItem("lastEvents");
-      events = storedEvents ? JSON.parse(storedEvents) : [];
-    } else { // Handle when the user is online
-      const token = await getAccessToken();
-
-      console.log('token =', token)
+      const token = await getAccessToken(); // Ensure token is available
 
       if (token) {
-        removeQuery();
-        const url =
-          "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-events" +
-          "/" +
-          token;
+        const url = `http://localhost:8000/get-calendar-events/${token}`; // Fetch events from local server
         const response = await fetch(url);
         if (!response.ok) {
           console.error(
@@ -135,27 +182,45 @@ export const getEvents = async (selectedCity = "") => {
           throw new Error("Failed to fetch events");
         }
         const result = await response.json();
-        // Extract events from the response and store in local storage
+        events = result.events;
+        localStorage.setItem("lastEvents", JSON.stringify(events)); // Store events in local storage
+      }
+    } else if (!navigator.onLine) {
+      // Handle when the user is offline
+      const storedEvents = localStorage.getItem("lastEvents");
+      events = storedEvents ? JSON.parse(storedEvents) : [];
+    } else {
+      // Handle when the user is online and not in dev mode
+      const token = await getAccessToken();
+
+      if (token) {
+        removeQuery();
+        const url = `https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-events/${token}`;
+        const response = await fetch(url);
+        if (!response.ok) {
+          console.error(
+            "Failed to fetch events:",
+            response.status,
+            response.statusText
+          );
+          throw new Error("Failed to fetch events");
+        }
+        const result = await response.json();
         events = result.events;
         localStorage.setItem("lastEvents", JSON.stringify(events));
       }
     }
-
   } catch (error) {
     console.error("Error in getEvents:", error.message);
-    // If error, set events to an empty array
     events = [];
   } finally {
-    // Ensure progress bar is always ended
     NProgress.done();
   }
 
-  // If a city is selected, filter events by that city
   if (selectedCity && selectedCity !== "See all cities") {
     events = events.filter((event) =>
       event.location.toLowerCase().includes(selectedCity.toLowerCase())
     );
   }
-  // Return filtered or unfiltered events
   return events;
 };

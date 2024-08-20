@@ -7,10 +7,6 @@ import { InfoAlert, ErrorAlert, WarningAlert } from "./components/Alert/Alert";
 import { getEvents, extractLocations } from "./api";
 import "./App.css";
 
-// hooks 
-import { useCheckToken } from "./hooks";
-
-
 const App = () => {
   const [allLocations, setAllLocations] = useState([]);
   const [events, setEvents] = useState([]);
@@ -21,11 +17,6 @@ const App = () => {
   const [infoAlert, setInfoAlert] = useState("");
   const [errorAlert, setErrorAlert] = useState("");
   const [warningAlert, setWarningAlert] = useState("");
-
-  // const checkToken = useCheckToken()
-  // console.log('checkToken =', checkToken)
-
-
 
   // Hook to fetch data whenever numberOfEvents or selectedCity changes
   useEffect(() => {
@@ -42,11 +33,6 @@ const App = () => {
     } else {
       setWarningAlert("");
     }
-
-    // if(checkToken) {
-    //   fetchData();
-    // }
-
     fetchData()
   }, [numberOfEvents, selectedCity]);
 
@@ -54,7 +40,6 @@ const App = () => {
   const handleCitySelection = async (city) => {
     setSelectedCity(city);
   };
-
 
   return (
     <div className="App">
