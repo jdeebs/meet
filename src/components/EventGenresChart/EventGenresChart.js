@@ -4,11 +4,28 @@ import { ResponsiveContainer, PieChart, Pie, Legend } from "recharts";
 
 const EventGenresChart = ({ events }) => {
   const [data, setData] = useState([]);
+  const [outerRadius, setOuterRadius] = useState(150);
   const genres = ["React", "JavaScript", "Node", "jQuery", "AngularJS"];
 
   useEffect(() => {
     setData(getData());
   }, [events]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setOuterRadius(getOuterRadius());
+    };
+
+    // Set radius on mount
+    setOuterRadius(getOuterRadius());
+
+    // Add resize event listener
+    window.addEventListener("resize", handleResize);
+    return () => {
+      // Clean up event listener on unmount
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const getData = () => {
     return genres.map((genre) => {
@@ -22,18 +39,14 @@ const EventGenresChart = ({ events }) => {
     });
   };
 
-  const renderCustomizedLabel = ({
-    cx,
-    cy,
-    midAngle,
-    outerRadius,
-    percent,
-    index,
-  }) => {
-    const RADIAN = Math.PI / 180;
-    const radius = outerRadius;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN) * 1.07;
-    const y = cy + radius * Math.sin(-midAngle * RADIAN) * 1.07;
+  const getOuterRadius = () => {
+    const width = window.innerWidth;
+    if (width <= 480) return 80; // Smaller radius for very small screens
+    if (width <= 768) return 100; // Medium radius for small screens
+    return 150; // Default radius for larger screens
+  };
+
+  const renderCustomizedLabel = ({ x, y, cx, index, percent }) => {
     return percent ? (
       <text
         x={x}
@@ -56,7 +69,7 @@ const EventGenresChart = ({ events }) => {
           fill="#8884d8"
           labelLine={false}
           label={renderCustomizedLabel}
-          outerRadius={150}
+          outerRadius={outerRadius}
         />
       </PieChart>
     </ResponsiveContainer>
