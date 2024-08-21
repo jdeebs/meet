@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import CitySearch from "./components/CitySearch/CitySearch";
 import EventList from "./components/EventList/EventList";
 import NumberOfEvents from "./components/NumberOfEvents/NumberOfEvents";
-import CityEventsChart from "./components/CityEventsChart/CityEventsChart"
+import CityEventsChart from "./components/CityEventsChart/CityEventsChart";
+import EventGenresChart from "./components/EventGenresChart/EventGenresChart";
 import { InfoAlert, ErrorAlert, WarningAlert } from "./components/Alert/Alert";
 import { getEvents, extractLocations } from "./api";
 import "./App.css";
@@ -29,11 +30,13 @@ const App = () => {
     };
     // Display warning message if user is offline
     if (!navigator.onLine) {
-      setWarningAlert("You are currently offline. New events will not update until a connection is established.");
+      setWarningAlert(
+        "You are currently offline. New events will not update until a connection is established."
+      );
     } else {
       setWarningAlert("");
     }
-    fetchData()
+    fetchData();
   }, [numberOfEvents, selectedCity]);
 
   // Handler function to update the selectedCity state
@@ -57,10 +60,13 @@ const App = () => {
         setNumberOfEvents={setNumberOfEvents}
         setErrorAlert={setErrorAlert}
       />
-      <CityEventsChart allLocations={allLocations} events={events} />
+
+      <div className="charts-container">
+        <EventGenresChart events={events} />
+        <CityEventsChart allLocations={allLocations} events={events} />
+      </div>
 
       <EventList events={events} />
-
     </div>
   );
 };
