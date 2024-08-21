@@ -55,12 +55,8 @@ const EventGenresChart = ({ events }) => {
 
     if (width <= 480) {
       fontSize = "10px"; // Small font for very small screens
-    } else if (width <= 768) {
-      fontSize = "12px"; // Medium font for small screens
-    } else if (width <= 1024) {
-      fontSize = "14px"; // Slightly larger font for medium screens
     } else {
-      fontSize = "16px"; // Default font size for larger screens
+      fontSize = "14px"; // Default font size for larger screens
     }
 
     return percent ? (

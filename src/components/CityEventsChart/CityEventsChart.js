@@ -51,7 +51,18 @@ const CityEventsChart = ({ allLocations, events }) => {
           name="Number of events"
           allowDecimals={false}
         />
-        <Tooltip cursor={{ strokeDasharray: "3 3" }} />
+        <Tooltip
+          cursor={{ strokeDasharray: "3 3" }}
+          contentStyle={{
+            backgroundColor: "#7777cc7d",
+            borderRadius: "5px",
+            color: "#fff",
+            border: "none",
+          }}
+          itemStyle={{
+            color: "#fff", // Text color for the city and number of events
+          }}
+        />
         <Scatter name="Events" data={data} fill="rgb(119, 119, 204)" />
       </ScatterChart>
     </ResponsiveContainer>
