@@ -41,17 +41,34 @@ const EventGenresChart = ({ events }) => {
 
   const getOuterRadius = () => {
     const width = window.innerWidth;
+    if (width <= 320) return 40; // Smallest radius for very small screens
     if (width <= 480) return 80; // Smaller radius for very small screens
     if (width <= 768) return 100; // Medium radius for small screens
+    if (width <= 1024) return 120; // Larger radius for medium screens
     return 150; // Default radius for larger screens
   };
 
   const renderCustomizedLabel = ({ x, y, cx, index, percent }) => {
+    // Dynamically set the font size based on screen width
+    const width = window.innerWidth;
+    let fontSize;
+
+    if (width <= 480) {
+      fontSize = "10px"; // Small font for very small screens
+    } else if (width <= 768) {
+      fontSize = "12px"; // Medium font for small screens
+    } else if (width <= 1024) {
+      fontSize = "14px"; // Slightly larger font for medium screens
+    } else {
+      fontSize = "16px"; // Default font size for larger screens
+    }
+
     return percent ? (
       <text
         x={x}
         y={y}
-        fill="#8884d8"
+        fill="rgb(119, 119, 204)"
+        fontSize={fontSize}
         textAnchor={x > cx ? "start" : "end"}
         dominantBaseline="central"
       >
@@ -66,7 +83,7 @@ const EventGenresChart = ({ events }) => {
         <Pie
           data={data}
           dataKey="value"
-          fill="#8884d8"
+          fill="rgb(119, 119, 204)"
           labelLine={false}
           label={renderCustomizedLabel}
           outerRadius={outerRadius}

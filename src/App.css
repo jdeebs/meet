@@ -9,6 +9,11 @@ body {
   overflow-x: hidden; /* Prevents horizontal scrolling */
 }
 
+h1,
+h2 {
+  margin-top: 0;
+}
+
 input {
   width: 100%;
   padding: 1rem;
@@ -51,15 +56,21 @@ input {
 .charts-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 2rem;
+}
+
+/* Remove default outline on selection */
+.recharts-pie,
+recharts-layer,
+* {
+  outline: none !important;
 }
 
 @media (max-width: 768px) {
   .charts-container {
     grid-template-columns: 1fr;
+    padding: 0.5rem;
   }
-  .input-container {
+  .input-container{
     padding: 0rem;
   }
 }

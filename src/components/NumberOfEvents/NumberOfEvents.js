@@ -33,7 +33,7 @@ const NumberOfEvents = ({ setNumberOfEvents, setErrorAlert }) => {
 
   return (
     <div id="number-of-events-container">
-      <label htmlFor="number-of-events">Number of Events: </label>
+      <label htmlFor="number-of-events"><h2 id="subheader">Number of events</h2></label>
       <input
         type="number"
         id="number-of-events"
