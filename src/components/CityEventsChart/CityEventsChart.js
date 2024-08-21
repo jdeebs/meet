@@ -11,11 +11,27 @@ import {
 
 const CityEventsChart = ({ allLocations, events }) => {
   const [data, setData] = useState([]);
+  const [showXAxisLabels, setShowXAxisLabels] = useState(true);
 
   useEffect(() => {
     setData(getData());
+
+    const handleResize = () => {
+      // Hide x-axis labels if the screen width is below 380px
+      setShowXAxisLabels(window.innerWidth > 379);
+    };
+
+    // Call handleResize on mount
+    handleResize();
+
+    // Attach the resize event listener
+    window.addEventListener("resize", handleResize);
+
+    // Clean up the event listener on component unmount
+    return () => window.removeEventListener("resize", handleResize);
   }, [allLocations, events]);
 
+  // Filter city and event count data for the chart
   const getData = () => {
     return allLocations.map((location) => {
       const count = events.filter(
@@ -23,7 +39,8 @@ const CityEventsChart = ({ allLocations, events }) => {
       ).length;
       const city = location.split(/, | - /)[0];
       return { city, count };
-    });
+    })
+    .filter((dataPoint) => dataPoint.count > 0); // Filter out cities with no events
   };
 
   return (
@@ -43,7 +60,7 @@ const CityEventsChart = ({ allLocations, events }) => {
           name="City"
           angle={60}
           interval={0}
-          tick={{ dx: 20, dy: 40, fontSize: 14 }}
+          tick={showXAxisLabels ? { dx: 20, dy: 40, fontSize: 14 } : false}
         />
         <YAxis
           type="number"

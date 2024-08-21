@@ -55,6 +55,8 @@ const EventGenresChart = ({ events }) => {
 
     if (width <= 480) {
       fontSize = "10px"; // Small font for very small screens
+    } else if (width <=550) {
+      fontSize = "10px"; // Default font size for larger screens
     } else {
       fontSize = "14px"; // Default font size for larger screens
     }
