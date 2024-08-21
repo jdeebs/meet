@@ -51,15 +51,18 @@ const App = () => {
         {errorAlert.length ? <ErrorAlert text={errorAlert} /> : null}
         {warningAlert.length ? <WarningAlert text={warningAlert} /> : null}
       </div>
-      <h1 id="title">Meet App</h1>
-      <CitySearch
-        onCitySelect={handleCitySelection}
-        setInfoAlert={setInfoAlert}
-      />
-      <NumberOfEvents
-        setNumberOfEvents={setNumberOfEvents}
-        setErrorAlert={setErrorAlert}
-      />
+
+      <div className="input-container">
+        <h1 id="title">Meet App</h1>
+        <CitySearch
+          onCitySelect={handleCitySelection}
+          setInfoAlert={setInfoAlert}
+        />
+        <NumberOfEvents
+          setNumberOfEvents={setNumberOfEvents}
+          setErrorAlert={setErrorAlert}
+        />
+      </div>
 
       <div className="charts-container">
         <EventGenresChart events={events} />

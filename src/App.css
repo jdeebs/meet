@@ -4,12 +4,25 @@ body {
   background-color: #222;
   color: #fff;
   font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevents horizontal scrolling */
+}
+
+input {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1rem;
+  box-sizing: border-box; /* This ensures padding is included in the width */
+  margin-bottom: 1rem;
 }
 
 .App {
-  width: 90%;
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+  box-sizing: border-box;
 }
 
 #title {
@@ -26,6 +39,15 @@ body {
   z-index: 1000;
 }
 
+.input-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0 auto;
+  max-width: 500px; /* This limits the max size on large screens */
+  padding: 1rem; /* Padding for smaller screens */
+}
+
 .charts-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -36,6 +58,9 @@ body {
 @media (max-width: 768px) {
   .charts-container {
     grid-template-columns: 1fr;
+  }
+  .input-container {
+    padding: 0rem;
   }
 }
 
