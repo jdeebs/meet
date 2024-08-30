@@ -120,7 +120,7 @@ export const getEvents = async (selectedCity = "") => {
 
     // Handle when the user is online
     else {
-      const token = await getAccessToken();
+      const token = await getToken();
       if (token) {
         removeQuery();
         const url =
