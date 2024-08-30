@@ -24,10 +24,11 @@ export const getAccessToken = async () => {
 
       // Check if code has already been used
       if (!code || localStorage.getItem("code_used") === code) {
-        return;
+        return null;
       }
 
       if (!code) {
+        // Fetch the auth URL and redirect
         const response = await fetch(
           "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-auth-url"
         );
@@ -42,8 +43,10 @@ export const getAccessToken = async () => {
         }
         const { authUrl } = await response.json();
         window.location.href = authUrl;
+        // Redirecting, return null
+        return null;
       } else {
-        // Process the code
+        // Process the code to get the token
         const token = await getToken(code);
         if (token) {
           // Mark code as used
@@ -51,12 +54,13 @@ export const getAccessToken = async () => {
           // Clear code from the URL
           removeQuery();
         }
+        return token;
       }
     }
     return accessToken;
   } catch (error) {
     console.error("Error in getAccessToken:", error);
-    throw error;
+    return null;
   }
 };
 
@@ -91,7 +95,7 @@ const getToken = async (code) => {
     // Reset flag on error
     isFetchingToken = false;
     console.error("Error in getToken:", error.message);
-    throw error;
+    return null;
   }
 };
 
