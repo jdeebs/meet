@@ -22,21 +22,24 @@ const App = () => {
   // Hook to fetch data whenever numberOfEvents or selectedCity changes
   useEffect(() => {
     const fetchData = async () => {
-      // Fetch events based on selected city and then slice to limit by numberOfEvents
-      const allEvents = await getEvents(selectedCity);
-      const locations = extractLocations(allEvents);
-      setAllLocations(locations);
-      setEvents(allEvents.slice(0, numberOfEvents));
+      if (!localStorage.getItem("events_fetched")) {
+        // Fetch events based on selected city and then slice to limit by numberOfEvents
+        const allEvents = await getEvents();
+        const locations = extractLocations(allEvents);
+        setAllLocations(locations);
+        const filteredEvents = await getEvents(selectedCity);
+        setEvents(filteredEvents.slice(0, numberOfEvents));
+        localStorage.setItem("events_fetched", "true");
+      }
     };
-    // Handle network status dynamically
-    if (!navigator.onLine) {
-      setWarningAlert(
-        "You are currently offline. New events will not update until a connection is established."
-      );
-    } else {
+
+    // Avoid multiple calls during initial load
+    if (navigator.onLine) {
       setWarningAlert("");
+      fetchData();
+    } else {
+      setWarningAlert("You are currently offline.");
     }
-    fetchData();
   }, [numberOfEvents, selectedCity]);
 
   // Hook to listen for network status changes (online/offline)
