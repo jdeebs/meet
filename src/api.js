@@ -34,7 +34,10 @@ export const getAccessToken = async () => {
         const { authUrl } = result;
         return (window.location.href = authUrl);
       }
-      return code && (await getToken(code));
+      const token = code && (await getToken(code));
+      // Ensure query parameters are removed after token is fetched
+      removeQuery();
+      return token;
     }
     return accessToken;
   } catch (error) {
@@ -120,7 +123,7 @@ export const getEvents = async (selectedCity = "") => {
 
     // Handle when the user is online
     else {
-      const token = await getToken();
+      const token = await getAccessToken();
       if (token) {
         removeQuery();
         const url =
