@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/meet/static/css/main.5cfd323a.css",
+    "main.js": "/meet/static/js/main.dadd8966.js",
+    "static/js/453.5dc7ca0f.chunk.js": "/meet/static/js/453.5dc7ca0f.chunk.js",
+    "service-worker.js": "/meet/service-worker.js",
+    "static/media/jquery-logo.svg": "/meet/static/media/jquery-logo.eb2da02fb1ffc5a93c76944c46011337.svg",
+    "static/media/react-logo.svg": "/meet/static/media/react-logo.d70ef21d00ee9a80f524775799bb5983.svg",
+    "static/media/node-logo.svg": "/meet/static/media/node-logo.979d6c3ab108e5f85d9229b114fead9a.svg",
+    "static/media/js-logo.svg": "/meet/static/media/js-logo.45687a3d83053bd27bac35627e904d53.svg",
+    "index.html": "/meet/index.html",
+    "static/media/angular-logo.svg": "/meet/static/media/angular-logo.32d73998731a8db2a4c24e98479e6502.svg",
+    "main.5cfd323a.css.map": "/meet/static/css/main.5cfd323a.css.map",
+    "main.dadd8966.js.map": "/meet/static/js/main.dadd8966.js.map",
+    "453.5dc7ca0f.chunk.js.map": "/meet/static/js/453.5dc7ca0f.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.5cfd323a.css",
+    "static/js/main.dadd8966.js"
+  ]
+}
