@@ -33,6 +33,7 @@ const App = () => {
           setAllLocations(locations);
           const filteredEvents = await getEvents(selectedCity);
           setEvents(filteredEvents.slice(0, numberOfEvents));
+          setErrorAlert("");
         }
       } catch (error) {
         console.error("Error fetching events:", error);
