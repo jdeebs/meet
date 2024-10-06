@@ -22,25 +22,23 @@ const App = () => {
   // Hook to fetch data whenever numberOfEvents or selectedCity changes
   useEffect(() => {
     const fetchData = async () => {
-      if (!localStorage.getItem("events_fetched")) {
-        try {
-          // Fetch all events
-          const allEvents = await getEvents();
-          if (allEvents.length === 0) {
-            setErrorAlert("No events found.");
-          } else {
-            // Extract locations and filter events
-            const locations = extractLocations(allEvents);
-            setAllLocations(locations);
-            const filteredEvents = await getEvents(selectedCity);
-            setEvents(filteredEvents.slice(0, numberOfEvents));
-          }
-        } catch (error) {
-          console.error("Error fetching events:", error);
-          setErrorAlert("An error occurred while fetching events.");
-        } finally {
-          localStorage.setItem("events_fetched", "true");
+      try {
+        // Fetch all events
+        const allEvents = await getEvents();
+        if (allEvents.length === 0) {
+          setErrorAlert("No events found.");
+        } else {
+          // Extract locations and filter events
+          const locations = extractLocations(allEvents);
+          setAllLocations(locations);
+          const filteredEvents = await getEvents(selectedCity);
+          setEvents(filteredEvents.slice(0, numberOfEvents));
         }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+        setErrorAlert("An error occurred while fetching events.");
+      } finally {
+        localStorage.setItem("events_fetched", "true");
       }
     };
 
