@@ -1,9 +1,6 @@
 import mockData from "./mock-data";
 import NProgress from "nprogress";
 
-// Global flag to track token fetching status
-let isFetchingToken = false;
-
 const checkToken = async (accessToken) => {
   const response = await fetch(
     `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`
@@ -21,14 +18,7 @@ export const getAccessToken = async () => {
       localStorage.removeItem("access_token");
       const searchParams = new URLSearchParams(window.location.search);
       const code = searchParams.get("code");
-
-      // Check if code has already been used
-      if (!code || localStorage.getItem("code_used") === code) {
-        return null;
-      }
-
       if (!code) {
-        // Fetch the auth URL and redirect
         const response = await fetch(
           "https://wd44hpn7b3.execute-api.us-west-1.amazonaws.com/dev/get-auth-url"
         );
@@ -38,38 +28,22 @@ export const getAccessToken = async () => {
             response.status,
             response.statusText
           );
-          console.error("Failed to fetch auth URL");
           throw new Error("Failed to fetch auth URL");
         }
-        const { authUrl } = await response.json();
-        window.location.href = authUrl;
-        // Redirecting, return null
-        return null;
-      } else {
-        // Process the code to get the token
-        const token = await getToken(code);
-        if (token) {
-          // Mark code as used
-          localStorage.setItem("code_used", code);
-          // Clear code from the URL
-          removeQuery();
-        }
-        return token;
+        const result = await response.json();
+        const { authUrl } = result;
+        return (window.location.href = authUrl);
       }
+      return code && (await getToken(code));
     }
     return accessToken;
   } catch (error) {
     console.error("Error in getAccessToken:", error);
-    return null;
+    throw error;
   }
 };
 
 const getToken = async (code) => {
-  // Prevent fetching if already in progress
-  if (isFetchingToken) return null;
-  // Set flag to prevent duplicate requests
-  isFetchingToken = true;
-
   try {
     const encodeCode = encodeURIComponent(code);
     const response = await fetch(
@@ -88,23 +62,26 @@ const getToken = async (code) => {
     if (access_token) {
       localStorage.setItem("access_token", access_token);
     }
-    // Reset flag after successful fetch
-    isFetchingToken = false;
     return access_token;
   } catch (error) {
-    // Reset flag on error
-    isFetchingToken = false;
     console.error("Error in getToken:", error.message);
-    return null;
+    throw error;
   }
 };
 
 const removeQuery = () => {
-  const url = new URL(window.location);
-  // Remove OAuth code from URL
-  url.searchParams.delete("code");
-  // Replace current URL with new URL
-  window.history.replaceState({}, document.title, url.pathname);
+  let newurl;
+  if (window.history.pushState && window.location.pathname) {
+    newurl =
+      window.location.protocol +
+      "//" +
+      window.location.host +
+      window.location.pathname;
+    window.history.pushState("", "", newurl);
+  } else {
+    newurl = window.location.protocol + "//" + window.location.host;
+    window.history.pushState("", "", newurl);
+  }
 };
 
 /**
